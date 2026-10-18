@@ -124,7 +124,8 @@ class ToolsFragment : Fragment() {
             typeface = android.graphics.Typeface.MONOSPACE
             textSize = 12f
             setTextIsSelectable(true)
-            setPadding(dp(20), dp(8), dp(20), dp(8))
+            val pad = (resources.displayMetrics.density * 20).toInt()
+            setPadding(pad, pad / 2, pad, pad / 2)
         }
         val builder = MaterialAlertDialogBuilder(ctx)
             .setTitle(R.string.compat_title)
