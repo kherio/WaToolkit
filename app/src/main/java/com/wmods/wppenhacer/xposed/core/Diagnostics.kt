@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit
 object Diagnostics {
     private const val MAX_FAILURES = 150
     private const val MAX_TEXT = 300
+    private const val MAX_EVENTS = 40
     private const val PUSH_DELAY_MS = 3000L
 
     private class FeatureResult(val name: String, val ms: Long, val error: String?)
@@ -27,6 +28,7 @@ object Diagnostics {
 
     private val features = Collections.synchronizedList(ArrayList<FeatureResult>())
     private val failures = Collections.synchronizedMap(LinkedHashMap<String, Failure>())
+    private val events = Collections.synchronizedList(ArrayList<String>())
     private val resolvedKeys: MutableSet<String> = java.util.concurrent.ConcurrentHashMap.newKeySet()
     private val currentFeature = ThreadLocal<String?>()
     private val scheduler = Executors.newSingleThreadScheduledExecutor { r ->
@@ -39,6 +41,16 @@ object Diagnostics {
 
     @Volatile
     var supported: Boolean = true
+
+    /** Records a runtime event (last [MAX_EVENTS] kept) so a feature that did nothing can be explained. */
+    fun event(tag: String, message: String) {
+        val line = "${java.text.SimpleDateFormat("HH:mm:ss", java.util.Locale.ROOT).format(java.util.Date())} [$tag] ${clip(message)}"
+        synchronized(events) {
+            events.add(line)
+            while (events.size > MAX_EVENTS) events.removeAt(0)
+        }
+        schedulePush()
+    }
 
     /** Marks the feature whose hooks are being installed on this thread (null to clear). */
     fun enterFeature(name: String?) = currentFeature.set(name)
@@ -78,6 +90,7 @@ object Diagnostics {
                 }
             }
         })
+        put("events", JSONArray().also { arr -> synchronized(events) { events.forEach { arr.put(it) } } })
         put("failures", JSONArray().also { arr ->
             synchronized(failures) {
                 failures.values.forEach {
