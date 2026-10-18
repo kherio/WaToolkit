@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           submodules: recursive
+          fetch-depth: 0
 
       - name: set up JDK 17
         uses: actions/setup-java@v5.6.0
@@ -48,6 +49,31 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$VERSION-$SHA8" >> $GITHUB_OUTPUT
 
+      - name: Generate release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Notes come from the commit titles (squash-merged PR titles) since the previous release.
+          PREV_TAG=$(gh api "repos/${{ github.repository }}/releases/latest" --jq .tag_name 2>/dev/null || true)
+          PREV_SHA="${PREV_TAG##*-}"
+          if [ -n "$PREV_SHA" ] && git cat-file -e "$PREV_SHA^{commit}" 2>/dev/null; then
+            RANGE="$PREV_SHA..HEAD"
+          else
+            RANGE="-n 20"
+          fi
+          git log --no-merges --pretty=format:%s $RANGE > subjects.txt || true
+          clean() { sed -E 's/^[a-z]+(\([^)]*\))?!?: *//; s/ *\(#[0-9]+\)$//; s/^./\U&/; s/^/- /'; }
+          : > release-notes.txt
+          section() { # title, regex of commit types
+            LINES=$(grep -E "^($2)(\([^)]*\))?!?:" subjects.txt | clean || true)
+            if [ -n "$LINES" ]; then printf '### %s\n\n%s\n\n' "$1" "$LINES" >> release-notes.txt; fi
+          }
+          section "New" "feat"
+          section "Fixed" "fix"
+          section "Improved" "perf|refactor|chore"
+          if [ ! -s release-notes.txt ]; then echo "- Maintenance release" > release-notes.txt; fi
+          cat release-notes.txt
+
       - name: Write key
         env:
           KEY_STORE: ${{ secrets.KEY_STORE }}
@@ -71,7 +97,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           name: WaToolkit ${{ steps.vars.outputs.version }}
-          body_path: changelog.txt
+          body_path: release-notes.txt
           files: |
             app/build/outputs/apk/whatsapp/debug/WaToolkit*.apk
           tag_name: ${{ steps.vars.outputs.tag }}
