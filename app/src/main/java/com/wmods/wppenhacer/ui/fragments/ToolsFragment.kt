@@ -17,6 +17,8 @@ import android.widget.Toast
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.wmods.wppenhacer.toolkit.DiagnosticsReport
 import com.wmods.wppenhacer.toolkit.S
 import com.wmods.wppenhacer.toolkit.ToolRequest
 import com.wmods.wppenhacer.toolkit.update.UpdateFlow
@@ -69,6 +71,9 @@ class ToolsFragment : Fragment() {
             Tool("🔓", getString(R.string.decrypt_backup), getString(R.string.decrypt_backup_desc)) {
                 pickBackup.launch(arrayOf("*/*"))
             },
+            Tool("🩺", getString(R.string.compat_title), getString(R.string.compat_desc)) {
+                showCompatibility()
+            },
             Tool("⬇", S.get(S.update_menu), S.get(S.tool_update_desc)) {
                 UpdateFlow(requireActivity()).start()
             }
@@ -108,6 +113,32 @@ class ToolsFragment : Fragment() {
             list.addView(card)
         }
         return NestedScrollView(ctx).apply { addView(list) }
+    }
+
+    /** Shows what worked and what did not on the installed WhatsApp version, with a copy button. */
+    private fun showCompatibility() {
+        val ctx = requireContext()
+        val summary = DiagnosticsReport.load(ctx)
+        val body = TextView(ctx).apply {
+            text = summary?.text ?: getString(R.string.compat_none)
+            typeface = android.graphics.Typeface.MONOSPACE
+            textSize = 12f
+            setTextIsSelectable(true)
+            val pad = (resources.displayMetrics.density * 20).toInt()
+            setPadding(pad, pad / 2, pad, pad / 2)
+        }
+        val builder = MaterialAlertDialogBuilder(ctx)
+            .setTitle(R.string.compat_title)
+            .setView(NestedScrollView(ctx).apply { addView(body) })
+            .setNegativeButton(android.R.string.ok, null)
+        if (summary != null) {
+            builder.setPositiveButton(R.string.copy_to_clipboard) { _, _ ->
+                val cm = ctx.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                cm.setPrimaryClip(android.content.ClipData.newPlainText("WaToolkit", summary.text))
+                Toast.makeText(ctx, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show()
+            }
+        }
+        builder.show()
     }
 
     /** Opens WhatsApp (or WhatsApp Business, if it is the only one or the chosen one) with the tool. */

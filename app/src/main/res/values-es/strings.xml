@@ -536,4 +536,7 @@
     <string name="decrypt_backup_done">Copia descifrada</string>
     <string name="decrypt_backup_wrong">Contraseña incorrecta o copia dañada</string>
     <string name="decrypt_backup_failed">No se pudo descifrar: %1$s</string>
+    <string name="compat_title">Comprobar compatibilidad</string>
+    <string name="compat_desc">Muestra qué funciones y buscadores funcionan en tu versión de WhatsApp, para copiar el informe cuando algo falle.</string>
+    <string name="compat_none">Aún no hay informe. Abre WhatsApp una vez con el módulo activo y vuelve aquí.</string>
 </resources>

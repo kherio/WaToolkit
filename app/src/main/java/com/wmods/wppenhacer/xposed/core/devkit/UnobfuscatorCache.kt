@@ -1,5 +1,6 @@
 package com.wmods.wppenhacer.xposed.core.devkit
 
+import com.wmods.wppenhacer.xposed.core.Diagnostics
 import android.app.Application
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -268,7 +269,7 @@ class UnobfuscatorCache private constructor(private val mApplication: Applicatio
         codec: CacheCodec<T>,
         onNull: () -> Exception
     ): T {
-        readCached(key, loader, codec)?.let { return it }
+        readCached(key, loader, codec)?.let { Diagnostics.resolved(key, null); return it }
 
         // Re-check inside the lock: another thread may have resolved the key while we waited.
         synchronized(keyLocks.computeIfAbsent(key) { Any() }) {
@@ -276,8 +277,10 @@ class UnobfuscatorCache private constructor(private val mApplication: Applicatio
             try {
                 val result = functionCall.call() ?: throw onNull()
                 cacheStore.putString(NAMESPACE_HOOKS, key, codec.serialize(result))
+                Diagnostics.resolved(key, null)
                 return result
             } catch (e: Exception) {
+                Diagnostics.resolved(key, e)
                 throw Exception("Error resolving $key: ${e.message}", e)
             }
         }

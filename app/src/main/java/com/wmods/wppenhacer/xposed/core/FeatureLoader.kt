@@ -96,6 +96,7 @@ object FeatureLoader : YukiBaseHooker() {
 
         YukiLog.log(versionName)
         currentVersion = versionName
+        Diagnostics.whatsAppVersion = versionName
         CrashHandler.install(application, versionName)
         supportedVersions = application.resources.getStringArray(supportedVersionsRes(application)).toList()
         application.registerActivityLifecycleCallbacks(WaCallback())
@@ -145,6 +146,7 @@ object FeatureLoader : YukiBaseHooker() {
         versionName: String
     ) {
         val isSupported = supportedVersions.any { versionName.startsWith(it.replace(".xx", "")) }
+        Diagnostics.supported = isSupported
         if (isSupported) return
 
         disableExpirationVersion(application.classLoader)
@@ -240,6 +242,8 @@ object FeatureLoader : YukiBaseHooker() {
         for (clazz in FeatureRegistry.features) {
             CompletableFuture.runAsync({
                 val startTime = System.currentTimeMillis()
+                var failure: Throwable? = null
+                Diagnostics.enterFeature(clazz.simpleName)
                 try {
                     val plugin = clazz
                         .getConstructor(ClassLoader::class.java, SharedPreferences::class.java)
@@ -248,9 +252,12 @@ object FeatureLoader : YukiBaseHooker() {
                     plugin.doHook()
                 } catch (e: Throwable) {
                     YukiLog.log(e)
+                    failure = e
                     errors.add(LoadError.from(clazz.simpleName, versionWpp, e))
                 }
+                Diagnostics.enterFeature(null)
                 val duration = System.currentTimeMillis() - startTime
+                Diagnostics.featureLoaded(clazz.simpleName, duration, failure)
                 timings.add("* Loaded Plugin ${clazz.simpleName} in ${duration}ms")
             }, executor)
         }
