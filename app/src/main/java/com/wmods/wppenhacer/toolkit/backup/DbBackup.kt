@@ -12,7 +12,7 @@ import java.util.Locale
 /**
  * Backups of the WhatsApp databases (msgstore.db and wa.db).
  *
- * Cada copia es una carpeta `yyyyMMdd-HHmmss[-prerestore]` dentro de [backupRoot].
+ * Each backup is a folder named `yyyyMMdd-HHmmss[-prerestore]` inside [backupRoot].
  * Restoring replaces the files by atomic rename: the database WhatsApp has open
  * keeps pointing to the old file, so it cannot corrupt the restored one.
  */
@@ -22,7 +22,7 @@ class DbBackup(
     private val backupRoot: File,
     private val keep: Int = 8
 ) {
-    class NoSpaceException : IOException("No hay espacio suficiente")
+    class NoSpaceException : IOException("Not enough free space")
 
     data class Backup(val dir: File, val createdAt: Long, val sizeBytes: Long, val hasWaDb: Boolean, val safety: Boolean)
 
@@ -32,7 +32,7 @@ class DbBackup(
     private val stampFormat get() = SimpleDateFormat("yyyyMMdd-HHmmss", Locale.ROOT)
 
     fun create(safety: Boolean = false): Backup {
-        if (!msgstore.exists()) throw IOException("No existe msgstore.db")
+        if (!msgstore.exists()) throw IOException("msgstore.db not found")
         val need = (msgstore.length() + (if (waDb.exists()) waDb.length() else 0L)) * 12 / 10
         backupRoot.mkdirs()
         if (backupRoot.usableSpace < need) throw NoSpaceException()
@@ -44,7 +44,7 @@ class DbBackup(
         var dir = File(backupRoot, stamp)
         var n = 1
         while (dir.exists()) dir = File(backupRoot, "$stamp-${n++}")
-        if (!dir.mkdirs()) throw IOException("No se pudo crear ${dir.path}")
+        if (!dir.mkdirs()) throw IOException("Could not create ${dir.path}")
         try {
             msgstore.copyTo(File(dir, "msgstore.db"))
             if (waDb.exists()) waDb.copyTo(File(dir, "wa.db"))
@@ -72,7 +72,7 @@ class DbBackup(
      */
     fun restore(b: Backup, includeWaDb: Boolean = true): Backup {
         val src = File(b.dir, "msgstore.db")
-        if (!src.exists()) throw IOException("La copia no contiene msgstore.db")
+        if (!src.exists()) throw IOException("The backup does not contain msgstore.db")
         val safety = create(safety = true)
         replace(src, msgstore)
         val waSrc = File(b.dir, "wa.db")
@@ -80,7 +80,7 @@ class DbBackup(
         return safety
     }
 
-    // ------------------------------------------------------------------ internos
+    // ------------------------------------------------------------------ internals
 
     private fun replace(src: File, target: File) {
         val stage = File(target.parentFile, target.name + ".restore")

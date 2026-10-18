@@ -9,7 +9,7 @@ import java.io.File
  * Controls who can use the bridge (HookBinder / remote preferences).
  *
  * Only calls from the module itself and from WhatsApp / WhatsApp Business are accepted.
- * Cualquier otra app instalada queda rechazada, aunque el servicio y los providers
+ * Any other installed app is rejected, even though the service and the providers
  * are exported (needed so the hooked process can reach them).
  */
 object CallerGuard {
@@ -43,8 +43,8 @@ object CallerGuard {
 
     /**
      * Resolves [path] to its canonical form (no "..", no symlinks) and only
-     * devuelve si cae en almacenamiento compartido. Rutas privadas (/data/...) o del
-     * system are rejected, so the bridge does not expose other apps' data or
+     * returns it if it falls in shared storage. Private paths (/data/...) and
+     * system paths are rejected, so the bridge does not expose other apps' data or
      * the module's own.
      */
     fun resolveSharedPath(path: String): File? {

@@ -224,7 +224,7 @@ class ExportChatFlow(private val activity: Activity) {
                     fileAttached = S.get(S.export_label_attached)
                 )
                 val exporter = ChatExporter(dbFile, Host.rootWhatsAppDir(activity))
-                val out = activity.contentResolver.openOutputStream(uri) ?: error("No se pudo abrir el destino")
+                val out = activity.contentResolver.openOutputStream(uri) ?: error("Could not open the destination")
                 val stats = out.use {
                     exporter.export(
                         p.chat.info.rowId, p.chat.info.rawJid, p.chat.name, p.format, p.media, it, labels,

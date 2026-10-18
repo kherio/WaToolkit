@@ -160,6 +160,12 @@ object S {
     const val recover_error = 151
     const val deleted_tap_hint = 152
     const val deleted_open_error = 153
+    const val backup_enc_restore = 154
+    const val backup_enc_none = 155
+    const val backup_enc_pick = 156
+    const val backup_enc_password = 157
+    const val backup_enc_wrong = 158
+    const val backup_enc_working = 159
 
     private val en = arrayOf(
         "Import chat",
@@ -316,6 +322,12 @@ object S {
         "Recovery failed: %1\$s",
         "Tap a message to open it in its chat.",
         "Could not open the chat.",
+        "Restore encrypted backup",
+        "No encrypted backups yet. Turn on Local backup in the Privacy tab.",
+        "Choose an encrypted backup",
+        "Backup password",
+        "Wrong password or corrupted backup",
+        "Decrypting the backup…",
     )
 
     private val es = arrayOf(
@@ -473,9 +485,15 @@ object S {
         "Error al recuperar: %1\$s",
         "Toca un mensaje para abrirlo en su chat.",
         "No se pudo abrir el chat.",
+        "Restaurar copia cifrada",
+        "Aún no hay copias cifradas. Activa la copia local en la pestaña Privacidad.",
+        "Elige una copia cifrada",
+        "Contraseña de la copia",
+        "Contraseña incorrecta o copia dañada",
+        "Descifrando la copia…",
     )
 
-    /** Texto en el idioma del dispositivo; los argumentos usan el formato de String.format. */
+    /** Text in the device language; the arguments use the String.format syntax. */
     fun get(id: Int, vararg args: Any): String {
         val table = if (java.util.Locale.getDefault().language == "es") es else en
         val raw = table[id]

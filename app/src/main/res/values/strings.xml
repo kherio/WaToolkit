@@ -594,4 +594,6 @@
     <string name="compat_title">Compatibility check</string>
     <string name="compat_desc">Shows which features and finders work on your installed WhatsApp version, so you can copy the report when something fails.</string>
     <string name="compat_none">No report yet. Open WhatsApp once with the module enabled and come back.</string>
+    <string name="auto_backup_notify">Notify when done</string>
+    <string name="auto_backup_notify_sum">Show a notification with the result of each backup, including ones that run in the background.</string>
 </resources>

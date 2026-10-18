@@ -71,7 +71,7 @@ class RecoverChatFlow(private val activity: Activity) {
         dlg.show()
     }
 
-    // ------------------------------------------------------------------ chats de la copia
+    // ------------------------------------------------------------------ chats in the backup
 
     private fun loadChats(src: Source) {
         val progress = busy(S.get(S.recover_loading))

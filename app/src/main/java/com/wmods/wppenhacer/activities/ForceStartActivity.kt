@@ -8,7 +8,7 @@ class ForceStartActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val packageName = intent.getStringExtra("pkg")
-        // Actividad exportada: solo se puede lanzar WhatsApp / WhatsApp Business.
+        // Exported activity: it can only launch WhatsApp / WhatsApp Business.
         if (packageName != null && packageName in ALLOWED_PACKAGES) {
             packageManager.getLaunchIntentForPackage(packageName)?.let { launchIntent ->
                 launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

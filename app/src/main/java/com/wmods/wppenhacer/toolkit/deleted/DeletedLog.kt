@@ -58,7 +58,7 @@ class DeletedLog(private val dbFile: File) {
      * are copied automatically). Returns how many messages were copied now.
      */
     fun enable(backfillDays: Int = 90): Long {
-        if (!dbFile.exists()) throw IllegalStateException("No existe msgstore.db")
+        if (!dbFile.exists()) throw IllegalStateException("msgstore.db not found")
         val db = openWrite()
         try {
             val cols = HashSet<String>()

@@ -10,7 +10,7 @@ object Updater {
 
     class Release(val version: String, val apkUrl: String, val apkName: String)
 
-    /** true si [remote] ("v0.4.0" o "0.4.0-abcd1234") es mayor que [local]. */
+    /** true if [remote] ("v0.4.0" or "0.4.0-abcd1234") is greater than [local]. */
     fun isNewer(remote: String, local: String): Boolean {
         val a = parts(remote)
         val b = parts(local)

@@ -42,6 +42,10 @@ class BackupFlow(private val activity: Activity) {
             text = S.get(S.backup_create)
             setOnClickListener { create() }
         })
+        layout.addView(Button(activity).apply {
+            text = S.get(S.backup_enc_restore)
+            setOnClickListener { pickEncrypted() }
+        })
         layout.addView(TextView(activity).apply {
             text = S.get(S.backup_location, backupRoot.path.substringAfter("/Android/", backupRoot.path))
             textSize = 11f
@@ -123,6 +127,75 @@ class BackupFlow(private val activity: Activity) {
                 }.start()
             }
             .setNegativeButton(activity.getString(android.R.string.cancel), null).show()
+    }
+
+    /** Lists the encrypted backups made by "Local backup" and restores the chosen one. */
+    private fun pickEncrypted() {
+        val files = try { EncryptedBackup(activity).listDatabaseBackups() } catch (_: Throwable) { emptyList() }
+        if (files.isEmpty()) {
+            Dlg(activity).setTitle(S.get(S.backup_enc_restore)).setMessage(S.get(S.backup_enc_none))
+                .setPositiveButton(S.get(S.deleted_close), null).show()
+            return
+        }
+        val labels = files.map { df.format(Date(it.lastModified())) + "  ·  " + size(it.length()) }
+        val list = ListView(activity).apply { adapter = Monet.adapter(activity, labels) }
+        val dialog = Dlg(activity).setTitle(S.get(S.backup_enc_pick)).setView(list)
+            .setPositiveButton(S.get(S.deleted_close), null).also { it.show() }
+        list.setOnItemClickListener { _, _, pos, _ ->
+            dialog.dismiss()
+            askPassword(files[pos])
+        }
+    }
+
+    private fun askPassword(file: File) {
+        val input = android.widget.EditText(activity).apply {
+            hint = S.get(S.backup_enc_password)
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+            // The module's own backup password is the usual one, so offer it.
+            setText(com.wmods.wppenhacer.xposed.utils.Utils.xprefs.getString("auto_backup_password", "").orEmpty())
+        }
+        val box = LinearLayout(activity).apply {
+            setPadding(dp(20), dp(8), dp(20), dp(8))
+            addView(input, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        }
+        Dlg(activity).setTitle(S.get(S.backup_enc_restore)).setView(box)
+            .setPositiveButton(S.get(S.backup_restore)) { _, _ ->
+                val password = input.text.toString().toCharArray()
+                confirmEncryptedRestore(file, password)
+            }
+            .setNegativeButton(activity.getString(android.R.string.cancel), null).show()
+    }
+
+    private fun confirmEncryptedRestore(file: File, password: CharArray) {
+        val date = df.format(Date(file.lastModified()))
+        Dlg(activity).setTitle(S.get(S.backup_restore))
+            .setMessage(S.get(S.backup_restore_confirm, date))
+            .setPositiveButton(S.get(S.backup_restore)) { _, _ ->
+                Host.toast(activity, S.get(S.backup_enc_working))
+                Thread { restoreEncrypted(file, password) }.start()
+            }
+            .setNegativeButton(activity.getString(android.R.string.cancel), null).show()
+    }
+
+    private fun restoreEncrypted(file: File, password: CharArray) {
+        val work = File(activity.cacheDir, "wt-restore-${System.currentTimeMillis()}")
+        try {
+            // Decrypting and validating first means a wrong password or a damaged file never touches the live databases.
+            EncryptedBackup(activity).extractDatabases(file, password, work)
+            val size = (work.listFiles() ?: emptyArray()).sumOf { it.length() }
+            val backup = DbBackup.Backup(work, file.lastModified(), size, File(work, "wa.db").exists(), false)
+            store().restore(backup)
+            ui {
+                Host.toast(activity, S.get(S.backup_restored), android.widget.Toast.LENGTH_LONG)
+                Host.restart(activity)
+            }
+        } catch (e: BackupCrypto.WrongPasswordException) {
+            ui { Host.toast(activity, S.get(S.backup_enc_wrong), android.widget.Toast.LENGTH_LONG) }
+        } catch (e: Throwable) {
+            fail(e)
+        } finally {
+            work.deleteRecursively()
+        }
     }
 
     private fun fail(e: Throwable) {

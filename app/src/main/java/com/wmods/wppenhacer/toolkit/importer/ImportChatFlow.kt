@@ -246,7 +246,7 @@ class ImportChatFlow(private val activity: Activity, private val uri: Uri) {
         }
         root.addView(summary)
 
-        // Chat de destino: uno existente o uno nuevo con un contacto
+        // Destination chat: an existing one or a new one with a contact
         root.addView(label(str(S.import_chat_destination)))
         val modeGroup = RadioGroup(activity).apply { orientation = RadioGroup.VERTICAL }
         val rbExisting = RadioButton(activity).apply {
@@ -372,7 +372,7 @@ class ImportChatFlow(private val activity: Activity, private val uri: Uri) {
             .show()
     }
 
-    /** Lista de chats con buscador. */
+    /** List of chats with a search box. */
     private fun showChatPicker(onPick: (ChatChoice?) -> Unit) {
         val layout = LinearLayout(activity).apply {
             orientation = LinearLayout.VERTICAL

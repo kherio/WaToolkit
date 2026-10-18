@@ -40,7 +40,7 @@ class EncryptedBackup(private val context: Context) {
         val dir = outDir
         if (dir.usableSpace < sources.sumOf { it.length() } * 3) throw NoSpaceException()
 
-        val result = writeArchive(dir, "WaToolkit-db-$stamp.wtbak", password) { zip ->
+        val result = writeArchive(dir, "WaToolkit-db-$stamp.wtbak", password, true) { zip ->
             var count = 0
             for (db in sources) {
                 addDatabase(zip, db)
@@ -63,7 +63,7 @@ class EncryptedBackup(private val context: Context) {
         val dir = outDir
         if (dir.usableSpace < files.sumOf { it.length() } * 11 / 10) throw NoSpaceException()
 
-        return writeArchive(dir, "WaToolkit-media-$stamp.wtbak", password) { zip ->
+        return writeArchive(dir, "WaToolkit-media-$stamp.wtbak", password, false) { zip ->
             var count = 0
             for (file in files) {
                 try {
@@ -81,6 +81,7 @@ class EncryptedBackup(private val context: Context) {
         dir: File,
         name: String,
         password: CharArray,
+        requireDatabase: Boolean,
         fill: (ZipOutputStream) -> Int
     ): Result {
         val part = File(dir, "$name.part")
@@ -94,6 +95,10 @@ class EncryptedBackup(private val context: Context) {
                 zip.write("WaToolkit backup\npackage=${context.packageName}\ncreated=${Date()}\n".toByteArray())
                 zip.closeEntry()
                 count = fill(zip)
+            }
+            // Read the archive back before trusting it: a backup that cannot be restored is worse than none.
+            part.inputStream().buffered().use {
+                BackupArchive.verify(it, password, context.cacheDir, requireDatabase)
             }
             if (!part.renameTo(target)) throw IOException("Could not finalize the backup")
         } catch (e: Throwable) {
@@ -128,6 +133,20 @@ class EncryptedBackup(private val context: Context) {
         file.inputStream().use { it.copyTo(zip) }
         zip.closeEntry()
     }
+
+    /** Encrypted database backups in the Auto folder, newest first. */
+    fun listDatabaseBackups(): List<File> =
+        (outDir.listFiles { f -> f.isFile && f.name.startsWith("WaToolkit-db-") && f.name.endsWith(".wtbak") }
+            ?: emptyArray()).sortedByDescending { it.name }
+
+    /**
+     * Decrypts [file] and extracts its databases into [outDir], ready for [DbBackup.restore].
+     * Throws [BackupCrypto.WrongPasswordException] for a wrong password.
+     */
+    fun extractDatabases(file: File, password: CharArray, outDir: File): List<String> =
+        file.inputStream().buffered().use {
+            BackupArchive.extractDatabases(it, password, context.cacheDir, outDir)
+        }
 
     private fun prune(dir: File, prefix: String, keep: Int) {
         val old = (dir.listFiles { f -> f.isFile && f.name.startsWith(prefix) && f.name.endsWith(".wtbak") }

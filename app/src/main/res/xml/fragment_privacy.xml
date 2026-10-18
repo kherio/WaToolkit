@@ -212,6 +212,12 @@
             app:summary="@string/auto_backup_media_sum"
             app:title="@string/auto_backup_media" />
 
+        <rikka.material.preference.MaterialSwitchPreference
+            app:defaultValue="true"
+            app:key="auto_backup_notify"
+            app:summary="@string/auto_backup_notify_sum"
+            app:title="@string/auto_backup_notify" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
