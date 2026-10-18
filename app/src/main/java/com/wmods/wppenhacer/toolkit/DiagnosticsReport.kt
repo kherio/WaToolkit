@@ -60,6 +60,12 @@ object DiagnosticsReport {
                 appendLine("FEATURES WITH A MISSING FINDER (some options may not work)")
                 affected.forEach { appendLine("- $it") }
             }
+            val events = json.optJSONArray("events")
+            if (events != null && events.length() > 0) {
+                appendLine()
+                appendLine("RECENT EVENTS")
+                for (i in 0 until events.length()) appendLine(events.getString(i))
+            }
             if (failedFinders.isNotEmpty()) {
                 appendLine()
                 appendLine("FINDERS THAT FAILED (a feature may have a fallback)")

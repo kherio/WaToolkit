@@ -14,6 +14,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.wmods.wppenhacer.R
+import com.wmods.wppenhacer.xposed.core.Diagnostics
 import com.wmods.wppenhacer.xposed.core.Feature
 import com.wmods.wppenhacer.xposed.core.WppCore
 import com.wmods.wppenhacer.xposed.core.components.FMessageWpp
@@ -38,9 +39,10 @@ class ScreenshotBlock(
 
     override fun getPluginName(): String = "Screenshot Block"
 
-    override fun doHook() {
-        if (!xprefs.getBoolean("secure_chats", false)) return
+    /** Read live, so enabling the switch works without restarting WhatsApp. */
+    private fun enabled() = xprefs.getBoolean("secure_chats", false)
 
+    override fun doHook() {
         val contactInfoClass = Unobfuscator.findFirstClassUsingName(
             classLoader, StringMatchType.EndsWith, ".ContactInfoActivity"
         )
@@ -65,13 +67,16 @@ class ScreenshotBlock(
                 try {
                     when (type) {
                         WppCore.ActivityChangeState.ChangeType.STARTED -> {
+                            if (!enabled()) return
                             if (contactInfoClass.isInstance(activity) || groupInfoClass.isInstance(activity)) {
                                 addInfoItem(activity, contactInfoClass.isInstance(activity))
+                            } else if (WppCore.getCurrentConversation() === activity) {
+                                applyToConversation(activity)
                             }
                         }
 
                         WppCore.ActivityChangeState.ChangeType.RESUMED -> {
-                            if (WppCore.getCurrentConversation() === activity) applyToConversation(activity)
+                            if (enabled() && WppCore.getCurrentConversation() === activity) applyToConversation(activity)
                         }
 
                         else -> {}
@@ -85,6 +90,24 @@ class ScreenshotBlock(
 
     private fun prefKey(number: String) = "${number}_secure"
 
+    /**
+     * Every identifier a chat can be known by: its phone number and its LID number. WhatsApp
+     * shows the same chat under either, and the phone number is missing when the LID cannot be
+     * converted, so using both keeps the info screen and the conversation in agreement.
+     */
+    private fun chatKeys(jid: FMessageWpp.UserJid): Set<String> {
+        val keys = LinkedHashSet<String>()
+        jid.phoneNumber?.takeIf { it.isNotEmpty() }?.let { keys.add(it) }
+        try {
+            val raw = jid.userJid?.let { ReflectionUtils.callMethod(it, "getRawString") as? String }
+            raw?.substringBefore('@')?.substringBefore('.')?.takeIf { it.isNotEmpty() }?.let { keys.add(it) }
+        } catch (_: Throwable) {
+        }
+        return keys
+    }
+
+    private fun isSecure(keys: Set<String>) = keys.any { WppCore.getPrivBoolean(prefKey(it), false) }
+
     /** The chat may take a moment to be ready, so this retries a couple of times. */
     private fun applyToConversation(activity: Activity) {
         val handler = Handler(Looper.getMainLooper())
@@ -92,8 +115,15 @@ class ScreenshotBlock(
             handler.postDelayed({
                 try {
                     if (activity.isFinishing || activity.isDestroyed) return@postDelayed
-                    val number = WppCore.getCurrentUserJid()?.phoneNumber ?: return@postDelayed
-                    setSecure(activity, WppCore.getPrivBoolean(prefKey(number), false))
+                    val jid = WppCore.getCurrentUserJid()
+                    val keys = if (jid == null) emptySet() else chatKeys(jid)
+                    if (keys.isEmpty()) {
+                        Diagnostics.event("ScreenshotBlock", "conversation opened but its chat id is unknown (try $delay ms)")
+                        return@postDelayed
+                    }
+                    val secure = isSecure(keys)
+                    setSecure(activity, secure)
+                    if (delay == 0L) Diagnostics.event("ScreenshotBlock", "conversation ${keys.first()}: secure=$secure")
                 } catch (e: Throwable) {
                     logDebug(e)
                 }
@@ -107,6 +137,7 @@ class ScreenshotBlock(
         val lp = window.attributes
         val has = lp.flags and WindowManager.LayoutParams.FLAG_SECURE != 0
         if (has == secure) return
+        Diagnostics.event("ScreenshotBlock", "FLAG_SECURE ${if (secure) "set" else "cleared"} on ${activity.javaClass.simpleName}")
         lp.flags = if (secure) {
             lp.flags or WindowManager.LayoutParams.FLAG_SECURE
         } else {
@@ -123,7 +154,11 @@ class ScreenshotBlock(
         val jid = FMessageWpp.UserJid(
             ReflectionUtils.callMethod(if (isChat) chatUserJidMethod else groupUserJidMethod, activity)
         )
-        val number = jid.phoneNumber ?: return
+        val keys = chatKeys(jid)
+        if (keys.isEmpty()) {
+            Diagnostics.event("ScreenshotBlock", "info screen opened but the chat id is unknown")
+            return
+        }
 
         val icon = activity.getDrawable(R.drawable.ic_privacy)!!
         icon.setTint(0xff8696a0.toInt())
@@ -160,7 +195,7 @@ class ScreenshotBlock(
         }
         fun refresh() {
             summary.text = activity.getString(
-                if (WppCore.getPrivBoolean(prefKey(number), false)) R.string.secure_chat_on else R.string.secure_chat_off
+                if (isSecure(keys)) R.string.secure_chat_on else R.string.secure_chat_off
             )
         }
         refresh()
@@ -169,8 +204,9 @@ class ScreenshotBlock(
         row.addView(image)
         row.addView(texts)
         row.setOnClickListener {
-            val enabled = !WppCore.getPrivBoolean(prefKey(number), false)
-            WppCore.setPrivBoolean(prefKey(number), enabled)
+            val enabled = !isSecure(keys)
+            keys.forEach { WppCore.setPrivBoolean(prefKey(it), enabled) }
+            Diagnostics.event("ScreenshotBlock", "chat ${keys.first()}: secure=$enabled (keys=$keys)")
             refresh()
             Utils.showToast(
                 activity.getString(if (enabled) R.string.secure_chat_on else R.string.secure_chat_off),
