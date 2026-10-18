@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import androidx.preference.PreferenceManager
+import com.wmods.wppenhacer.toolkit.DiagnosticsReport
 import com.wmods.wppenhacer.toolkit.ToolRequest
 import com.wmods.wppenhacer.xposed.bridge.service.CallerGuard
 
@@ -19,6 +20,16 @@ class PrefsProvider : ContentProvider() {
             if (arg == null || !CallerGuard.isCallerAllowed(context)) return null
             val tool = ToolRequest.take(context, arg) ?: return null
             return Bundle().apply { putString(KEY_TOOL, tool) }
+        }
+        if (method == METHOD_PUT_DIAGNOSTICS) {
+            if (arg == null || arg.length > MAX_DIAGNOSTICS_CHARS || !CallerGuard.isCallerAllowed(context)) return null
+            return try {
+                org.json.JSONObject(arg) // reject anything that is not valid JSON
+                DiagnosticsReport.file(context).writeText(arg)
+                Bundle()
+            } catch (_: Exception) {
+                null
+            }
         }
         if (method != METHOD_GET_ALL) return null
         // Exported provider: only the module and WhatsApp/WhatsApp Business can read
@@ -68,6 +79,8 @@ class PrefsProvider : ContentProvider() {
     companion object {
         const val METHOD_GET_ALL = "getAll"
         const val METHOD_TAKE_PENDING_TOOL = "takePendingTool"
+        const val METHOD_PUT_DIAGNOSTICS = "putDiagnostics"
+        private const val MAX_DIAGNOSTICS_CHARS = 256 * 1024
         const val KEY_TOOL = "tool"
         const val KEY_VALUES = "values"
         const val KEY_SETS = "sets"
