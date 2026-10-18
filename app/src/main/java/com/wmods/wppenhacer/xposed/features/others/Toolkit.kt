@@ -20,10 +20,10 @@ import com.wmods.wppenhacer.xposed.core.Feature
 import com.wmods.wppenhacer.xposed.core.WppCore.homeActivityClass
 
 /**
- * Herramientas de WaToolkit dentro de WhatsApp (importar/exportar chats, mensajes borrados,
- * recover chat and backups). They are launched from the "Tools" screen of the
- * module app, which opens WhatsApp and leaves the request here (see [ToolRequest]); this hook picks it up when
- * the main screen is shown and receives the results of the file pickers.
+ * WaToolkit tools inside WhatsApp (import/export chats, deleted messages,
+ * recover chat and backups). They are launched from the "Tools" screen of the module app,
+ * which opens WhatsApp and leaves the request here (see [ToolRequest]); this hook picks it up
+ * when the main screen is shown and receives the results of the file pickers.
  */
 class Toolkit(classLoader: ClassLoader, preferences: SharedPreferences) :
     Feature(classLoader, preferences) {

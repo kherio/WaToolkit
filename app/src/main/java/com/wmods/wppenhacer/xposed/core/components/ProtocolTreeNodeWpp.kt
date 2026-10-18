@@ -197,7 +197,7 @@ class ProtocolTreeNodeWpp(val mInstance: Any) {
     }
 
     /**
-     * Modifica TODOS os valores de um KeyValue existente com a chave fornecida.
+     * Modifies ALL values of an existing KeyValue with the given key.
      * If duplicates exist, all of them take the new value.
      */
     fun modifyKeyValue(key: String, newValue: String) {

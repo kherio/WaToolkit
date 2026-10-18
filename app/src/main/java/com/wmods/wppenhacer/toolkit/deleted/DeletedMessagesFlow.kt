@@ -80,7 +80,7 @@ class DeletedMessagesFlow(private val activity: Activity) {
         }.start()
     }
 
-    // ------------------------------------------------------------------ una fila
+    // ------------------------------------------------------------------ one row
 
     private fun describe(e: DeletedMessagesReader.Entry, names: Names, lids: Map<String, String>): Row {
         val chatName = if (e.chatIsGroup) {
@@ -176,7 +176,7 @@ class DeletedMessagesFlow(private val activity: Activity) {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(20), dp(8), dp(20), dp(8))
         }
-        // Estado del registro de texto
+        // Text log state
         if (log != null) {
             layout.addView(TextView(activity).apply {
                 text = if (log.enabled) str(S.log_banner_on, log.messages) else str(S.log_banner_off)
@@ -254,7 +254,7 @@ class DeletedMessagesFlow(private val activity: Activity) {
         else Host.toast(activity, str(S.deleted_open_error))
     }
 
-    // ------------------------------------------------------------------ registro de texto
+    // ------------------------------------------------------------------ text log
 
     private fun logFile() = DeletedLog(File(Host.accountDataDir(activity), "databases/msgstore.db"))
 

@@ -12,11 +12,11 @@ import java.util.Locale
  * Inserts the messages of an exported chat into WhatsApp's msgstore.db.
  *
  * It does not know the database schema in advance (it changes between WhatsApp versions): it reads
- * the real columns with PRAGMA table_info and only writes the ones that exist. For the
- * `message` se parte de un mensaje real del mismo tipo (para heredar los valores que WhatsApp
- * espera) y se sobrescribe lo propio del mensaje importado.
+ * the real columns with PRAGMA table_info and only writes the ones that exist. Each `message` row
+ * starts from a real message of the same type (to inherit the values WhatsApp expects) and then
+ * the imported message's own values are written over it.
  *
- * Reglas de seguridad:
+ * Safety rules:
  *  - Only messages older than the first one the chat already has are imported (or all if it is empty),
  *    so no existing message moves or is duplicated.
  *  - Files are copied before touching the database, and the database is written in
@@ -84,7 +84,7 @@ class ChatImporter(
 
     /** Chats that can be chosen as the destination (no statuses or broadcast lists). */
     fun listChats(): List<ChatInfo> {
-        if (!dbFile.exists()) throw ImportException(Code.DB_MISSING, "No existe msgstore.db")
+        if (!dbFile.exists()) throw ImportException(Code.DB_MISSING, "msgstore.db not found")
         val chatCols = openRead().use { db -> columnsOf(db, "chat").map { it.name }.toSet() }
         val order = if ("sort_timestamp" in chatCols) "ORDER BY c.sort_timestamp DESC" else ""
         val subject = if ("subject" in chatCols) "c.subject" else "NULL"
@@ -246,13 +246,13 @@ class ChatImporter(
         progress: Progress = Progress { _, _, _ -> },
         isCancelled: () -> Boolean = { false }
     ): Result {
-        if (!dbFile.exists()) throw ImportException(Code.DB_MISSING, "No existe msgstore.db")
+        if (!dbFile.exists()) throw ImportException(Code.DB_MISSING, "msgstore.db not found")
 
         val newJid = options.newChatJid
         val existingRow = if (newJid != null) openRead().use { findChatRowForJid(it, newJid) }
         else options.chatRowId
         val state = if (existingRow != null) inspect(existingRow)
-        else inspectNew(newJid ?: throw ImportException(Code.CHAT_NOT_FOUND, "Falta el chat de destino"))
+        else inspectNew(newJid ?: throw ImportException(Code.CHAT_NOT_FOUND, "The destination chat is missing"))
         var info = state.chat
         val chatHasMessages = state.hasMessages
         val firstTimestamp = state.firstTimestamp
@@ -266,8 +266,8 @@ class ChatImporter(
         if (candidates.isEmpty()) {
             throw ImportException(
                 Code.NOTHING_TO_IMPORT,
-                if (skipped > 0) "Todos los mensajes son posteriores al primero del chat"
-                else "No hay mensajes que importar"
+                if (skipped > 0) "All messages are newer than the first message of the chat"
+                else "There are no messages to import"
             )
         }
 
@@ -418,7 +418,7 @@ class ChatImporter(
         } catch (e: ImportException) {
             throw e
         } catch (e: Exception) {
-            throw ImportException(Code.DB_ERROR, e.message ?: "Error al crear el chat", e)
+            throw ImportException(Code.DB_ERROR, e.message ?: "Error creating the chat", e)
         } finally {
             db.close()
         }
@@ -463,7 +463,7 @@ class ChatImporter(
         }
     }
 
-    // ------------------------------------------------------------------ copia de seguridad
+    // ------------------------------------------------------------------ backup
 
     private fun backupDatabase(progress: Progress, isCancelled: () -> Boolean): File {
         val dir = dbFile.parentFile!!
@@ -556,7 +556,7 @@ class ChatImporter(
         }
     }
 
-    /** Evita pisar un archivo distinto que ya exista con ese nombre. */
+    /** Avoids overwriting a different file that already exists with that name. */
     private fun uniqueTarget(relPath: String, size: Long): Triple<File, String, Boolean> {
         var rel = relPath
         var n = 1

@@ -79,7 +79,7 @@ class ChatRecovery(private val currentDb: File, private val mediaRoot: File) {
         return cv
     }
 
-    /** Identificador estable de un mensaje para saber si ya existe. */
+    /** Stable identifier of a message, to tell whether it already exists. */
     private fun idOf(keyId: String?, ts: Long, fromMe: Boolean, text: String?) =
         if (!keyId.isNullOrEmpty()) keyId else "$ts|$fromMe|$text"
 

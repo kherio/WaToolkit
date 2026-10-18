@@ -19,7 +19,7 @@ class ChatExporter(private val dbFile: File, private val mediaRoot: File) {
     class Labels(
         val me: String = "Me",
         val deleted: String = "This message was deleted",
-        /** Con %1$s = texto recuperado del mensaje borrado. */
+        /** With %1$s = text recovered from the deleted message. */
         val deletedWithText: String = "%1\$s (deleted message)",
         val mediaOmitted: String = "<Media omitted>",
         val fileAttached: String = "file attached"
@@ -201,7 +201,7 @@ class ChatExporter(private val dbFile: File, private val mediaRoot: File) {
 
     private interface Writer {
         fun begin()
-        /** [file]: nombre del adjunto (null si no tiene); [inArchive]: si va dentro del ZIP. */
+        /** [file]: attachment name (null if none); [inArchive]: whether it goes inside the ZIP. */
         fun write(m: Message, sender: String, file: String?, inArchive: Boolean)
         fun end()
     }

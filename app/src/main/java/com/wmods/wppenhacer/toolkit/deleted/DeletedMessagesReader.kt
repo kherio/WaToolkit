@@ -31,9 +31,9 @@ class DeletedMessagesReader(private val dbFile: File) {
         val chatJid: String,
         val chatIsGroup: Boolean,
         val chatSubject: String?,
-        /** El mensaje era tuyo. */
+        /** The message was yours. */
         val fromMe: Boolean,
-        /** JID del autor; null si es tuyo o no se conoce. */
+        /** JID of the author; null if it is yours or unknown. */
         val authorJid: String?,
         /** JID of the admin who deleted it, if the author did not. */
         val adminJid: String?,
