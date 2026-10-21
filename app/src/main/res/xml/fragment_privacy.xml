@@ -218,6 +218,12 @@
             app:summary="@string/auto_backup_notify_sum"
             app:title="@string/auto_backup_notify" />
 
+        <Preference
+            android:dependency="auto_backup"
+            app:key="auto_backup_external_dir"
+            app:summary="@string/auto_backup_external_sum"
+            app:title="@string/auto_backup_external" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -134,6 +134,11 @@ class EncryptedBackup(private val context: Context) {
         zip.closeEntry()
     }
 
+    /** Every encrypted archive (database and media) in the Auto folder. */
+    fun allArchives(): List<File> =
+        (outDir.listFiles { f -> f.isFile && f.name.startsWith("WaToolkit-") && f.name.endsWith(".wtbak") }
+            ?: emptyArray()).toList()
+
     /** Encrypted database backups in the Auto folder, newest first. */
     fun listDatabaseBackups(): List<File> =
         (outDir.listFiles { f -> f.isFile && f.name.startsWith("WaToolkit-db-") && f.name.endsWith(".wtbak") }

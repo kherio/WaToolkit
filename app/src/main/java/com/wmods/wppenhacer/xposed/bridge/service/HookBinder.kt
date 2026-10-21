@@ -51,4 +51,23 @@ object HookBinder : WaeIIFace.Stub() {
         val file = resolve(path) ?: return emptyList()
         return file.listFiles()?.toList() ?: emptyList()
     }
+
+    override fun deleteFile(path: String): Boolean {
+        val file = resolve(path) ?: return false
+        return file.isFile && file.delete()
+    }
+
+    override fun renameFile(from: String, to: String): Boolean {
+        val source = resolve(from) ?: return false
+        val target = resolve(to) ?: return false
+        if (!source.isFile) return false
+        return try {
+            java.nio.file.Files.move(
+                source.toPath(), target.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING
+            )
+            true
+        } catch (_: Exception) {
+            false
+        }
+    }
 }

@@ -596,4 +596,14 @@
     <string name="compat_none">No report yet. Open WhatsApp once with the module enabled and come back.</string>
     <string name="auto_backup_notify">Notify when done</string>
     <string name="auto_backup_notify_sum">Show a notification with the result of each backup, including ones that run in the background.</string>
+    <string name="auto_backup_external">External folder</string>
+    <string name="auto_backup_external_sum">Also copy the encrypted backups to a folder you choose, for example one that Syncthing or Nextcloud keeps in sync. Not set.</string>
+    <string name="auto_backup_external_set">Folder: %1$s</string>
+    <string name="auto_backup_external_choose">Choose folder</string>
+    <string name="auto_backup_external_remove">Stop copying</string>
+    <string name="auto_backup_external_perm">WaToolkit needs access to all files to write there. Allow it in the screen that opens, then choose the folder again.</string>
+    <string name="auto_backup_external_bad">That location cannot be used. Pick a folder in internal or SD card storage.</string>
+    <string name="auto_backup_done_ext">Backup done (%1$s). %2$d file(s) copied to the external folder.</string>
+    <string name="auto_backup_ext_synced">%1$d file(s) copied to the external folder.</string>
+    <string name="auto_backup_ext_failed">Backup saved, but copying to the external folder failed: %1$s</string>
 </resources>
