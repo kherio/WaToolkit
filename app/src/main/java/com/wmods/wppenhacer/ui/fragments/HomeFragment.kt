@@ -64,8 +64,6 @@ class HomeFragment : BaseFragment() {
                 try {
                     if (FeatureLoader.PACKAGE_WPP == intent.getStringExtra("PKG")) {
                         receiverBroadcastWpp(context, intent)
-                    } else {
-                        receiverBroadcastBusiness(context, intent)
                     }
                 } catch (_: Exception) {
                 }
@@ -95,12 +93,6 @@ class HomeFragment : BaseFragment() {
                     b.nestedScrollView.smoothScrollTo(0, b.diagCard.top)
                 }
             }
-        }
-
-        binding.rebootBtn2.setOnClickListener { view ->
-            animateClick(view)
-            App.instance.restartApp(FeatureLoader.PACKAGE_BUSINESS)
-            disableBusiness()
         }
 
         binding.exportBtn.setOnClickListener { view ->
@@ -148,12 +140,6 @@ class HomeFragment : BaseFragment() {
             binding.status2.startAnimation(anim)
         }, 100)
 
-        binding.status3.postDelayed({
-            if (!isAdded || _binding == null) return@postDelayed
-            val anim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_up)
-            binding.status3.startAnimation(anim)
-        }, 200)
-
         binding.infoCard.postDelayed({
             if (!isAdded || _binding == null) return@postDelayed
             binding.infoCard.startAnimation(fadeIn)
@@ -175,24 +161,6 @@ class HomeFragment : BaseFragment() {
         super.onResume()
         setDisplayHomeAsUpEnabled(false)
         updatePackageStatuses(requireContext())
-    }
-
-    private fun receiverBroadcastBusiness(context: Context, intent: Intent) {
-        if (App.isOriginalPackage) binding.status3.visibility = View.VISIBLE
-        binding.statusTitle3.setText(R.string.business_in_background)
-        val version = intent.getStringExtra("VERSION")
-        val supportedList =
-            context.resources.getStringArray(R.array.supported_versions_business).toList()
-        if (isSupportedVersion(version, supportedList)) {
-            binding.statusSummary3.text = getString(R.string.version_s, version)
-            binding.status3.getChildAt(0).setBackgroundResource(R.drawable.gradient_success)
-        } else {
-            binding.statusSummary3.text = getString(R.string.version_s_not_listed, version)
-            binding.status3.getChildAt(0).setBackgroundResource(R.drawable.gradient_warning)
-        }
-        binding.rebootBtn2.visibility = View.VISIBLE
-        binding.statusSummary3.visibility = View.VISIBLE
-        binding.statusIcon3.setImageResource(R.drawable.ic_round_check_circle_24)
     }
 
     private fun receiverBroadcastWpp(context: Context, intent: Intent) {
@@ -219,7 +187,6 @@ class HomeFragment : BaseFragment() {
             prefs.all.keys.forEach { key -> remove(key) }
         }
         App.instance.restartApp(FeatureLoader.PACKAGE_WPP)
-        App.instance.restartApp(FeatureLoader.PACKAGE_BUSINESS)
         Utils.showToast(context.getString(R.string.configs_reset), Toast.LENGTH_SHORT)
     }
 
@@ -346,8 +313,7 @@ class HomeFragment : BaseFragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                         App.instance.restartApp(FeatureLoader.PACKAGE_WPP)
-                        App.instance.restartApp(FeatureLoader.PACKAGE_BUSINESS)
-                    }
+                                    }
                 } catch (e: Exception) {
                     Log.e("importConfigs", e.message ?: "", e)
                     withContext(Dispatchers.Main) {
@@ -381,9 +347,6 @@ class HomeFragment : BaseFragment() {
         } else {
             binding.status2.visibility = View.GONE
         }
-        if (App.isOriginalPackage) {
-            binding.status3.visibility = View.GONE
-        }
         checkWpp(activity)
         binding.deviceName.text = Build.MANUFACTURER
         binding.sdk.text = Build.VERSION.SDK_INT.toString()
@@ -395,8 +358,6 @@ class HomeFragment : BaseFragment() {
             binding.listWppTitle.visibility = View.GONE
             binding.listWpp.visibility = View.GONE
         }
-        binding.listBusiness.text =
-            activity.resources.getStringArray(R.array.supported_versions_business).contentToString()
         updatePackageStatuses(activity)
     }
 
@@ -407,13 +368,6 @@ class HomeFragment : BaseFragment() {
             binding.whatsappPackageIcon,
             FeatureLoader.PACKAGE_WPP,
             context.resources.getStringArray(R.array.supported_versions_wpp).toList()
-        )
-        updatePackageStatus(
-            context,
-            binding.businessPackageSummary,
-            binding.businessPackageIcon,
-            FeatureLoader.PACKAGE_BUSINESS,
-            context.resources.getStringArray(R.array.supported_versions_business).toList()
         )
     }
 
@@ -471,14 +425,6 @@ class HomeFragment : BaseFragment() {
                 )
             )
         }
-    }
-
-    private fun disableBusiness() {
-        binding.statusIcon3.setImageResource(R.drawable.ic_round_error_outline_24)
-        binding.statusTitle3.setText(R.string.business_is_not_running_or_has_not_been_activated_in_lsposed)
-        binding.status3.getChildAt(0).setBackgroundResource(R.drawable.gradient_error)
-        binding.statusSummary3.visibility = View.GONE
-        binding.rebootBtn2.visibility = View.GONE
     }
 
     private fun disableWpp() {

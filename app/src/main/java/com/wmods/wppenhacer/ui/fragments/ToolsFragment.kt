@@ -141,26 +141,16 @@ class ToolsFragment : Fragment() {
         builder.show()
     }
 
-    /** Opens WhatsApp (or WhatsApp Business, if it is the only one or the chosen one) with the tool. */
+    /** Opens WhatsApp with the tool. */
     private fun open(tool: String) {
         val ctx = requireContext()
-        val installed = listOf("com.whatsapp", "com.whatsapp.w4b").filter {
-            try {
-                ctx.packageManager.getPackageInfo(it, 0)
-                true
-            } catch (_: Exception) {
-                false
-            }
+        val installed = try {
+            ctx.packageManager.getPackageInfo("com.whatsapp", 0)
+            true
+        } catch (_: Exception) {
+            false
         }
-        when (installed.size) {
-            0 -> Toast.makeText(ctx, "WhatsApp", Toast.LENGTH_SHORT).show()
-            1 -> launch(tool, installed[0])
-            else -> AlertDialog.Builder(ctx)
-                .setItems(arrayOf("WhatsApp", "WhatsApp Business")) { _, which ->
-                    launch(tool, installed[which])
-                }
-                .show()
-        }
+        if (installed) launch(tool, "com.whatsapp") else Toast.makeText(ctx, "WhatsApp", Toast.LENGTH_SHORT).show()
     }
 
     private fun launch(tool: String, pkg: String) {

@@ -10,7 +10,7 @@ object WhatsAppContactPickerLauncher {
     const val EXTRA_PICKER_MODE = "picker_mode"
     const val EXTRA_CONTACT_MODE = "contact_mode"
 
-    private val whatsappPackages = listOf("com.whatsapp", "com.whatsapp.w4b")
+    private val whatsappPackages = listOf("com.whatsapp")
     private val aboutActivityCandidates = listOf(
         "com.whatsapp.settings.About",
         "com.whatsapp.settings.ui.About"
