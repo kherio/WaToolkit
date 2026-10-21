@@ -541,4 +541,14 @@
     <string name="compat_none">Aún no hay informe. Abre WhatsApp una vez con el módulo activo y vuelve aquí.</string>
     <string name="auto_backup_notify">Avisar al terminar</string>
     <string name="auto_backup_notify_sum">Muestra una notificación con el resultado de cada copia, también las que se hacen en segundo plano.</string>
+    <string name="auto_backup_external">Carpeta externa</string>
+    <string name="auto_backup_external_sum">Copia también las copias cifradas a una carpeta que elijas, por ejemplo una que Syncthing o Nextcloud mantenga sincronizada. Sin configurar.</string>
+    <string name="auto_backup_external_set">Carpeta: %1$s</string>
+    <string name="auto_backup_external_choose">Elegir carpeta</string>
+    <string name="auto_backup_external_remove">Dejar de copiar</string>
+    <string name="auto_backup_external_perm">WaToolkit necesita acceso a todos los archivos para escribir ahí. Permítelo en la pantalla que se abre y vuelve a elegir la carpeta.</string>
+    <string name="auto_backup_external_bad">No se puede usar esa ubicación. Elige una carpeta del almacenamiento interno o de la tarjeta SD.</string>
+    <string name="auto_backup_done_ext">Copia hecha (%1$s). %2$d archivo(s) copiados a la carpeta externa.</string>
+    <string name="auto_backup_ext_synced">%1$d archivo(s) copiados a la carpeta externa.</string>
+    <string name="auto_backup_ext_failed">La copia se guardó, pero no se pudo copiar a la carpeta externa: %1$s</string>
 </resources>

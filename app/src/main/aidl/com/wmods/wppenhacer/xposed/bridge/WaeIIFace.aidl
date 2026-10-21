@@ -19,4 +19,10 @@ interface WaeIIFace {
 
     boolean exists(String path);
 
+    /** Deletes a file in shared storage. */
+    boolean deleteFile(String path);
+
+    /** Renames a file in shared storage, replacing the target if it exists. */
+    boolean renameFile(String from, String to);
+
 }
