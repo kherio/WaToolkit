@@ -61,8 +61,8 @@
     </style>
 
     <style name="ToolbarTitleStyle" parent="TextAppearance.Material3.TitleLarge">
-        <item name="android:textColor">@color/text_on_gradient</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
