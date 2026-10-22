@@ -210,10 +210,10 @@ class HomeFragment : BaseFragment() {
 
         if (isSupportedVersion(version, supportedList)) {
             binding.statusSummary1.text = getString(R.string.version_s, version)
-            binding.status2.getChildAt(0).setBackgroundResource(R.drawable.gradient_success)
+            binding.status2.getChildAt(0).setBackgroundResource(R.drawable.bg_status_ok)
         } else {
             binding.statusSummary1.text = getString(R.string.version_s_not_listed, version)
-            binding.status2.getChildAt(0).setBackgroundResource(R.drawable.gradient_warning)
+            binding.status2.getChildAt(0).setBackgroundResource(R.drawable.bg_status_warn)
         }
         binding.rebootBtn.visibility = View.VISIBLE
         binding.statusSummary1.visibility = View.VISIBLE
@@ -372,13 +372,15 @@ class HomeFragment : BaseFragment() {
         if (YukiHookAPI.Status.isXposedModuleActive) {
             binding.statusIcon.setImageResource(R.drawable.ic_round_check_circle_24)
             binding.statusTitle.setText(R.string.module_enabled)
-            binding.statusSummary.text =
-                String.format(getString(R.string.version_s), BuildConfig.VERSION_NAME)
-            binding.status.getChildAt(0).setBackgroundResource(R.drawable.gradient_success)
+            binding.statusSummary.text = getString(
+                R.string.home_module_summary, BuildConfig.VERSION_NAME,
+                Build.VERSION.RELEASE, Build.VERSION.SDK_INT, Build.MODEL
+            )
+            binding.status.getChildAt(0).setBackgroundResource(R.drawable.bg_status_ok)
         } else {
             binding.statusIcon.setImageResource(R.drawable.ic_round_error_outline_24)
             binding.statusTitle.setText(R.string.module_disabled)
-            binding.status.getChildAt(0).setBackgroundResource(R.drawable.gradient_error)
+            binding.status.getChildAt(0).setBackgroundResource(R.drawable.bg_status_error)
             binding.statusSummary.visibility = View.GONE
         }
         if (isInstalled(FeatureLoader.PACKAGE_WPP) && App.isOriginalPackage) {
@@ -469,8 +471,24 @@ class HomeFragment : BaseFragment() {
     private fun disableWpp() {
         binding.statusIcon2.setImageResource(R.drawable.ic_round_error_outline_24)
         binding.statusTitle2.setText(R.string.whatsapp_is_not_running_or_has_not_been_activated_in_lsposed)
-        binding.status2.getChildAt(0).setBackgroundResource(R.drawable.gradient_error)
-        binding.statusSummary1.visibility = View.GONE
+        binding.status2.getChildAt(0).setBackgroundResource(R.drawable.bg_status_error)
+        // Even when it is not running, say which WhatsApp version is installed.
+        val installed = try {
+            requireContext().packageManager.getPackageInfo(FeatureLoader.PACKAGE_WPP, 0).versionName
+        } catch (_: Exception) {
+            null
+        }
+        if (installed.isNullOrBlank()) {
+            binding.statusSummary1.visibility = View.GONE
+        } else {
+            val supported = isSupportedVersion(
+                installed, requireContext().resources.getStringArray(R.array.supported_versions_wpp).toList()
+            )
+            binding.statusSummary1.text = getString(
+                if (supported) R.string.app_version_s_supported else R.string.app_version_s_unsupported, installed
+            )
+            binding.statusSummary1.visibility = View.VISIBLE
+        }
         binding.rebootBtn.visibility = View.GONE
     }
 
@@ -541,19 +559,19 @@ class HomeFragment : BaseFragment() {
                 binding.updateIcon.setImageResource(R.drawable.ic_round_error_outline_24)
                 binding.updateTitle.setText(R.string.update_check_failed)
                 binding.updateSummary.setText(R.string.update_check_failed_summary)
-                binding.updateCard.getChildAt(0).setBackgroundResource(R.drawable.gradient_warning)
+                binding.updateCard.getChildAt(0).setBackgroundResource(R.drawable.bg_status_warn)
             } else if (isUpToDate) {
                 binding.updateIcon.setImageResource(R.drawable.ic_round_check_circle_24)
                 binding.updateTitle.setText(R.string.up_to_date)
                 binding.updateSummary.text =
                     getString(R.string.current_version_s, BuildConfig.VERSION_NAME)
-                binding.updateCard.getChildAt(0).setBackgroundResource(R.drawable.gradient_success)
+                binding.updateCard.getChildAt(0).setBackgroundResource(R.drawable.bg_status_ok)
             } else {
                 binding.updateIcon.setImageResource(R.drawable.ic_round_update_24)
                 binding.updateTitle.setText(R.string.update_available)
                 binding.updateSummary.text =
                     getString(R.string.update_available_summary, newVersion)
-                binding.updateCard.getChildAt(0).setBackgroundResource(R.drawable.gradient_update)
+                binding.updateCard.getChildAt(0).setBackgroundResource(R.drawable.bg_status_update)
             }
         }
     }

@@ -36,48 +36,13 @@
                 android:paddingBottom="@dimen/spacing_large"
                 tools:context=".ui.activity.MainActivity">
 
-                <LinearLayout
-                    android:id="@+id/searchPill"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginBottom="@dimen/spacing_small"
-                    android:background="@drawable/bg_search_pill"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="18dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:importantForAccessibility="no"
-                        android:src="@drawable/ic_search"
-                        app:tint="?android:attr/textColorSecondary" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:text="@string/hub_search"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="?android:attr/textColorSecondary" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/hubList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/spacing_medium"
-                    android:orientation="vertical" />
-
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/status"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_small"
-                    app:cardCornerRadius="@dimen/card_radius_large"
-                    app:cardElevation="@dimen/card_elevation_medium"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     app:cardPreventCornerOverlap="false"
                     app:strokeWidth="0dp">
 
@@ -85,7 +50,7 @@
                         android:id="@+id/status_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/gradient_primary"
+                        android:background="@drawable/bg_status_ok"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingHorizontal="@dimen/spacing_medium"
@@ -130,8 +95,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_small"
-                    app:cardCornerRadius="@dimen/card_radius_large"
-                    app:cardElevation="@dimen/card_elevation_medium"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     app:cardPreventCornerOverlap="false"
                     app:strokeWidth="0dp">
 
@@ -139,7 +104,7 @@
                         android:id="@+id/status_container2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/gradient_primary"
+                        android:background="@drawable/bg_status_ok"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingHorizontal="@dimen/spacing_medium"
@@ -213,8 +178,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/spacing_small"
-                    app:cardCornerRadius="@dimen/card_radius_large"
-                    app:cardElevation="@dimen/card_elevation_medium"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     app:cardPreventCornerOverlap="false"
                     app:strokeWidth="0dp">
 
@@ -222,7 +187,7 @@
                         android:id="@+id/update_container"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/gradient_update"
+                        android:background="@drawable/bg_status_update"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingHorizontal="@dimen/spacing_medium"
@@ -261,6 +226,41 @@
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:id="@+id/searchPill"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="@dimen/spacing_small"
+                    android:background="@drawable/bg_search_pill"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="18dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_search"
+                        app:tint="?android:attr/textColorSecondary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:text="@string/hub_search"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?android:attr/textColorSecondary" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/hubList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/spacing_medium"
+                    android:orientation="vertical" />
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/developer_warning_card"

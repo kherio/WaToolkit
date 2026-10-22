@@ -615,4 +615,5 @@
     <string name="hub_custom_sum">Colors, themes and WhatsApp styles</string>
     <string name="hub_recordings_sum">Recorded calls and their manager</string>
     <string name="hub_tools_sum">Backups, compatibility check and chat import</string>
+    <string name="home_module_summary">Module %1$s · Android %2$s (SDK %3$d) · %4$s</string>
 </resources>
