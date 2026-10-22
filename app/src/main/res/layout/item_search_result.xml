@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="6dp"
+    android:layout_marginTop="0dp"
     android:clickable="true"
     android:focusable="true"
-    app:cardBackgroundColor="?attr/colorSurfaceVariant"
-    app:cardCornerRadius="14dp"
+    app:cardBackgroundColor="@android:color/transparent"
+    app:cardCornerRadius="12dp"
+    app:strokeWidth="0dp"
     app:cardElevation="0dp"
     app:rippleColor="?attr/colorPrimary">
 
@@ -31,7 +32,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:textAppearance="?textAppearanceTitleSmall"
+                android:textAppearance="?textAppearanceTitleMedium"
                 android:textColor="?android:attr/textColorPrimary"
                 tools:text="Hide blue ticks" />
 
