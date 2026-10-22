@@ -577,6 +577,6 @@
     <string name="backup_now">Hacer copia ahora</string>
     <string name="backup_now_sum">Abre WhatsApp y hace la copia cifrada al momento, sin esperar al horario. Necesita la contraseña y usa la carpeta y las opciones de multimedia de arriba.</string>
     <string name="backup_now_started">Copia iniciada en segundo plano…</string>
-    <string name="backup_now_running">Ya hay una copia en curso.</string>
+    <string name="backup_now_running">Ya hay una copia en curso: %1$s (desde hace %2$d min). Mira el informe de compatibilidad para ver el progreso.</string>
     <string name="backup_now_no_password">Primero pon una contraseña para la copia.</string>
 </resources>

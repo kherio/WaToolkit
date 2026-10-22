@@ -632,6 +632,6 @@
     <string name="backup_now">Back up now</string>
     <string name="backup_now_sum">Opens WhatsApp and makes the encrypted backup right away, whatever the schedule says. It needs the password and uses the folder and media options above.</string>
     <string name="backup_now_started">Backup started in the background…</string>
-    <string name="backup_now_running">A backup is already running.</string>
+    <string name="backup_now_running">A backup is already running: %1$s (for %2$d min). Check the compatibility report for progress.</string>
     <string name="backup_now_no_password">Set a backup password first.</string>
 </resources>
