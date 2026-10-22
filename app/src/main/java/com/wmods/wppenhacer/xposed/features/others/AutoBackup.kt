@@ -36,9 +36,18 @@ class AutoBackup(
 
     override fun getPluginName(): String = "Auto Backup"
 
-    override fun doHook() {
-        if (!xprefs.getBoolean("auto_backup", false)) return
+    private var lastNote: String? = null
 
+    /** Records why a check did nothing (only when the reason changes), visible in the compatibility report. */
+    private fun note(message: String) {
+        if (message == lastNote) return
+        lastNote = message
+        Diagnostics.event("AutoBackup", message)
+    }
+
+    override fun doHook() {
+        // The hooks are always installed and the settings are read on every check, so turning the
+        // backup on (or changing its settings) works without restarting WhatsApp.
         WppCore.addListenerActivity(object : WppCore.ActivityChangeState {
             override fun onChange(activity: Activity, type: WppCore.ActivityChangeState.ChangeType) {
                 if (type == WppCore.ActivityChangeState.ChangeType.RESUMED) maybeRun()
@@ -59,8 +68,15 @@ class AutoBackup(
     }
 
     private fun maybeRun() {
+        if (!xprefs.getBoolean("auto_backup", false)) {
+            note("skipped: the local backup switch is off")
+            return
+        }
         val password = xprefs.getString("auto_backup_password", "").orEmpty()
-        if (password.isBlank()) return
+        if (password.isBlank()) {
+            note("skipped: no backup password is set")
+            return
+        }
         val intervalHours = xprefs.getString("auto_backup_interval", "24")?.toLongOrNull() ?: 24L
         val keep = xprefs.getString("auto_backup_keep", "3")?.toIntOrNull() ?: 3
         val includeMedia = xprefs.getBoolean("auto_backup_media", false)
@@ -75,8 +91,13 @@ class AutoBackup(
         // Archives that could not be copied earlier (folder unavailable, device offline) are retried.
         val lastSync = WppCore.getPrivString(SYNC_KEY, "0")?.toLongOrNull() ?: 0L
         val syncDue = externalDir.isNotEmpty() && now - lastSync >= RETRY_AFTER_FAILURE_HOURS * HOUR_MS
-        if (!backupDue && !syncDue) return
+        if (!backupDue && !syncDue) {
+            note("waiting: next backup in about ${((intervalHours * HOUR_MS - (now - last)) / HOUR_MS).coerceAtLeast(0)} h")
+            return
+        }
         if (!running.compareAndSet(false, true)) return
+        lastNote = null
+        Diagnostics.event("AutoBackup", "starting (backup=$backupDue, external copy=${externalDir.isNotEmpty() && (backupDue || syncDue)})")
 
         Thread {
             try {
@@ -93,8 +114,10 @@ class AutoBackup(
                         }
                         WppCore.setPrivString(LAST_KEY, now.toString())
                         WppCore.setPrivString(FAIL_KEY, "0")
+                        Diagnostics.event("AutoBackup", "backup created (${total / 1024} KB)")
                     } catch (e: Throwable) {
                         logDebug(e)
+                        Diagnostics.event("AutoBackup", "backup failed: ${e.message ?: e.javaClass.simpleName}")
                         WppCore.setPrivString(FAIL_KEY, System.currentTimeMillis().toString())
                         val reason = e.message ?: e.javaClass.simpleName
                         toast(R.string.auto_backup_failed, reason)
