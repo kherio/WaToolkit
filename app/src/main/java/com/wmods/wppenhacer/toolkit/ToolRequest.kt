@@ -13,13 +13,14 @@ object ToolRequest {
     const val DELETED = "deleted"
     const val RECOVER = "recover"
     const val BACKUP = "backup"
+    const val BACKUP_NOW = "backup_now"
 
     private const val FILE = "toolkit_requests"
     private const val KEY_TOOL = "tool"
     private const val KEY_PKG = "pkg"
     private const val KEY_TIME = "time"
     private const val MAX_AGE_MS = 120_000L
-    private val KNOWN = setOf(IMPORT, EXPORT, DELETED, RECOVER, BACKUP)
+    private val KNOWN = setOf(IMPORT, EXPORT, DELETED, RECOVER, BACKUP, BACKUP_NOW)
 
     /** Stores the request for [pkg] (WhatsApp or Business) and launches that app. */
     fun request(context: Context, tool: String, pkg: String): Boolean {

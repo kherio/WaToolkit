@@ -233,6 +233,11 @@
             app:summary="@string/auto_backup_external_sum"
             app:title="@string/auto_backup_external" />
 
+        <Preference
+            app:key="auto_backup_now"
+            app:summary="@string/backup_now_sum"
+            app:title="@string/backup_now" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

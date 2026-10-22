@@ -67,6 +67,7 @@ class Toolkit(classLoader: ClassLoader, preferences: SharedPreferences) :
                 ToolRequest.DELETED -> DeletedMessagesFlow(activity).start()
                 ToolRequest.RECOVER -> RecoverChatFlow(activity).start()
                 ToolRequest.BACKUP -> BackupFlow(activity).start()
+                ToolRequest.BACKUP_NOW -> AutoBackup.runNow()
             }
         } catch (t: Throwable) {
             Host.log(t)
