@@ -51,7 +51,10 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(),
                     if (parentFragmentManager.backStackEntryCount > 0) {
                         parentFragmentManager.popBackStack()
                     } else {
-                        requireActivity().finish()
+                        // Sections open from the home list: Back returns to it before leaving the app.
+                        val main = activity as? com.wmods.wppenhacer.activities.MainActivity
+                        if (main != null && main.isOnSection()) main.showPage(0)
+                        else requireActivity().finish()
                     }
                 }
             }
