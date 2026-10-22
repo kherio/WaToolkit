@@ -560,4 +560,5 @@
     <string name="hub_custom_sum">Colores, temas y estilos de WhatsApp</string>
     <string name="hub_recordings_sum">Llamadas grabadas y su gestor</string>
     <string name="hub_tools_sum">Copias, comprobación de compatibilidad e importar chats</string>
+    <string name="home_module_summary">Módulo %1$s · Android %2$s (SDK %3$d) · %4$s</string>
 </resources>
