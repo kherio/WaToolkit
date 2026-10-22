@@ -166,6 +166,10 @@ object S {
     const val backup_enc_password = 157
     const val backup_enc_wrong = 158
     const val backup_enc_working = 159
+    const val backup_media_check = 160
+    const val backup_media_working = 161
+    const val backup_media_done = 162
+    const val backup_media_failed = 163
 
     private val en = arrayOf(
         "Import chat",
@@ -328,6 +332,10 @@ object S {
         "Backup password",
         "Wrong password or corrupted backup",
         "Decrypting the backup…",
+        "Also restore media (%1\$d archive(s), %2\$s)",
+        "Restoring media… this can take several minutes.",
+        "Media restored: %1\$d new file(s), %2\$d already existed.",
+        "Media could not be restored: %1\$s",
     )
 
     private val es = arrayOf(
@@ -491,6 +499,10 @@ object S {
         "Contraseña de la copia",
         "Contraseña incorrecta o copia dañada",
         "Descifrando la copia…",
+        "Restaurar también la multimedia (%1\$d archivo(s), %2\$s)",
+        "Restaurando multimedia… puede tardar varios minutos.",
+        "Multimedia restaurada: %1\$d archivo(s) nuevos, %2\$d ya existían.",
+        "No se pudo restaurar la multimedia: %1\$s",
     )
 
     /** Text in the device language; the arguments use the String.format syntax. */

@@ -168,22 +168,38 @@ class BackupFlow(private val activity: Activity) {
 
     private fun confirmEncryptedRestore(file: File, password: CharArray) {
         val date = df.format(Date(file.lastModified()))
-        Dlg(activity).setTitle(S.get(S.backup_restore))
-            .setMessage(S.get(S.backup_restore_confirm, date))
+        val media = try { EncryptedBackup(activity).listMediaBackups() } catch (_: Throwable) { emptyList() }
+        val box = LinearLayout(activity).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(20), dp(8), dp(20), dp(8))
+        }
+        box.addView(TextView(activity).apply {
+            text = S.get(S.backup_restore_confirm, date)
+            setTextColor(Host.textColor(activity))
+        })
+        val check = android.widget.CheckBox(activity).apply {
+            text = S.get(S.backup_media_check, media.size, size(media.sumOf { it.length() }))
+            setTextColor(Host.textColor(activity))
+            isChecked = false
+        }
+        if (media.isNotEmpty()) box.addView(check)
+        Dlg(activity).setTitle(S.get(S.backup_restore)).setView(box)
             .setPositiveButton(S.get(S.backup_restore)) { _, _ ->
                 Host.toast(activity, S.get(S.backup_enc_working))
-                Thread { restoreEncrypted(file, password) }.start()
+                val withMedia = media.isNotEmpty() && check.isChecked
+                Thread { restoreEncrypted(file, password, if (withMedia) media else emptyList()) }.start()
             }
             .setNegativeButton(activity.getString(android.R.string.cancel), null).show()
     }
 
-    private fun restoreEncrypted(file: File, password: CharArray) {
+    private fun restoreEncrypted(file: File, password: CharArray, media: List<File>) {
         val work = File(activity.cacheDir, "wt-restore-${System.currentTimeMillis()}")
         try {
             // Decrypting and validating first means a wrong password or a damaged file never touches the live databases.
             EncryptedBackup(activity).extractDatabases(file, password, work)
             val size = (work.listFiles() ?: emptyArray()).sumOf { it.length() }
             val backup = DbBackup.Backup(work, file.lastModified(), size, File(work, "wa.db").exists(), false)
+            if (media.isNotEmpty()) restoreMedia(media, password)
             store().restore(backup)
             ui {
                 Host.toast(activity, S.get(S.backup_restored), android.widget.Toast.LENGTH_LONG)
@@ -196,6 +212,27 @@ class BackupFlow(private val activity: Activity) {
         } finally {
             work.deleteRecursively()
         }
+    }
+
+    /** Restores the media archives oldest first; a problem with them never blocks the chat restore. */
+    private fun restoreMedia(archives: List<File>, password: CharArray) {
+        ui { Host.toast(activity, S.get(S.backup_media_working), android.widget.Toast.LENGTH_LONG) }
+        val backup = EncryptedBackup(activity)
+        var restored = 0
+        var skipped = 0
+        var error: String? = null
+        for (archive in archives) {
+            try {
+                val r = backup.restoreMedia(archive, password)
+                restored += r.restored
+                skipped += r.skipped
+            } catch (e: Throwable) {
+                Host.log(e)
+                error = e.message ?: e.javaClass.simpleName
+            }
+        }
+        val message = error?.let { S.get(S.backup_media_failed, it) } ?: S.get(S.backup_media_done, restored, skipped)
+        ui { Host.toast(activity, message, android.widget.Toast.LENGTH_LONG) }
     }
 
     private fun fail(e: Throwable) {

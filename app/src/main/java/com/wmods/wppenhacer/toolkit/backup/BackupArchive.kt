@@ -4,6 +4,9 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.io.PipedInputStream
+import java.io.PipedOutputStream
+import java.util.concurrent.atomic.AtomicReference
 import java.util.zip.ZipException
 import java.util.zip.ZipInputStream
 
@@ -79,6 +82,69 @@ object BackupArchive {
         }
         return written
     }
+
+    class MediaResult(val restored: Int, val skipped: Int)
+
+    /**
+     * Restores the `media/...` entries of a media archive under [mediaRoot], streaming (the archive
+     * can be several GB, so it is never fully decrypted to disk). Files that already exist are
+     * kept, and an entry whose path would leave [mediaRoot] is ignored.
+     */
+    fun extractMedia(input: InputStream, password: CharArray, mediaRoot: File): MediaResult {
+        val pipeIn = PipedInputStream(PIPE_SIZE)
+        val pipeOut = PipedOutputStream(pipeIn)
+        val failure = AtomicReference<Throwable?>(null)
+        val decryptor = Thread {
+            try {
+                BackupCrypto.decrypt(input, pipeOut, password)
+            } catch (t: Throwable) {
+                failure.set(t)
+            } finally {
+                try { pipeOut.close() } catch (_: IOException) {}
+            }
+        }.apply { isDaemon = true; start() }
+
+        var restored = 0
+        var skipped = 0
+        val rootPath = mediaRoot.canonicalPath + File.separator
+        try {
+            mediaRoot.mkdirs()
+            ZipInputStream(pipeIn.buffered()).use { zip ->
+                while (true) {
+                    val entry = zip.nextEntry ?: break
+                    if (entry.isDirectory || !entry.name.startsWith("media/")) continue
+                    val rel = entry.name.removePrefix("media/")
+                    if (rel.isEmpty() || rel.contains('\\') || rel.split('/').any { it == ".." || it.isEmpty() }) continue
+                    val target = File(mediaRoot, rel)
+                    if (!target.canonicalPath.startsWith(rootPath)) continue
+                    if (target.exists()) {
+                        skipped++
+                        continue
+                    }
+                    target.parentFile?.mkdirs()
+                    val part = File(target.parentFile, target.name + ".part")
+                    try {
+                        FileOutputStream(part).use { zip.copyTo(it) }
+                        if (entry.time > 0) part.setLastModified(entry.time)
+                        if (part.renameTo(target)) restored++ else part.delete()
+                    } catch (e: IOException) {
+                        part.delete()
+                        throw e
+                    }
+                }
+            }
+        } catch (e: IOException) {
+            // A failure in the decrypting thread (wrong password, damaged archive) shows up here as a broken pipe.
+            decryptor.join()
+            failure.get()?.let { throw it }
+            throw e
+        }
+        decryptor.join()
+        failure.get()?.let { throw it }
+        return MediaResult(restored, skipped)
+    }
+
+    private const val PIPE_SIZE = 256 * 1024
 
     private fun decryptTo(input: InputStream, password: CharArray, target: File) {
         FileOutputStream(target).use { BackupCrypto.decrypt(input, it, password) }
