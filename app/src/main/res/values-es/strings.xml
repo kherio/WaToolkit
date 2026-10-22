@@ -516,7 +516,7 @@
     <string name="strip_metadata_sum">Elimina la ubicación, el modelo del móvil, las fechas y el autor de las imágenes que WhatsApp lee desde otras apps (galería, archivos, compartir). Se conserva la orientación. No cubre datos XMP ni otros tipos de archivo.</string>
     <string name="auto_backup_category">Copia local</string>
     <string name="auto_backup">Copia de seguridad cifrada programada</string>
-    <string name="auto_backup_sum">Guarda tus chats en un archivo cifrado en este dispositivo, sin Google Drive. Se ejecuta al abrir WhatsApp cuando ha pasado el intervalo. Los archivos están en Android/media/com.whatsapp/WaToolkit/Backups/Auto.</string>
+    <string name="auto_backup_sum">Guarda tus chats en un archivo cifrado en este dispositivo, sin Google Drive. Se ejecuta mientras WhatsApp está activo (o al abrirlo) cuando ha pasado el intervalo, a la hora que elijas si configuras una. Si el móvil estaba apagado a esa hora, se hace en cuanto WhatsApp vuelva a estar activo. Los archivos están en Android/media/com.whatsapp/WaToolkit/Backups/Auto.</string>
     <string name="auto_backup_password">Contraseña de la copia</string>
     <string name="auto_backup_password_sum">Obligatoria. Se usa para cifrar las copias y se guarda en este módulo; guarda una copia: sin ella no se puede abrir una copia.</string>
     <string name="auto_backup_interval">Intervalo de copia</string>
@@ -551,4 +551,6 @@
     <string name="auto_backup_done_ext">Copia hecha (%1$s). %2$d archivo(s) copiados a la carpeta externa.</string>
     <string name="auto_backup_ext_synced">%1$d archivo(s) copiados a la carpeta externa.</string>
     <string name="auto_backup_ext_failed">La copia se guardó, pero no se pudo copiar a la carpeta externa: %1$s</string>
+    <string name="auto_backup_hour">Hora de la copia</string>
+    <string name="auto_backup_hour_any">A cualquier hora (en cuanto pase el intervalo)</string>
 </resources>

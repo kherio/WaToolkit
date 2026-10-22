@@ -9,6 +9,7 @@ import android.graphics.drawable.Icon
 import android.content.SharedPreferences
 import android.widget.Toast
 import com.wmods.wppenhacer.R
+import com.wmods.wppenhacer.toolkit.backup.BackupSchedule
 import com.wmods.wppenhacer.toolkit.backup.BridgeTarget
 import com.wmods.wppenhacer.toolkit.backup.EncryptedBackup
 import com.wmods.wppenhacer.toolkit.backup.ExternalCopy
@@ -25,7 +26,8 @@ import java.util.concurrent.atomic.AtomicBoolean
  * Scheduled, encrypted local backups of the chat databases (and, optionally, the media) that do
  * not depend on Google Drive. WhatsApp has no scheduler we can hook, so the schedule is checked
  * whenever WhatsApp comes to the foreground and, while its process is alive (it usually is, to
- * receive messages), every [CHECK_PERIOD_MIN] minutes: if the chosen interval has passed, a backup runs.
+ * receive messages), every [CHECK_PERIOD_MIN] minutes: if the chosen interval has passed (and, when a
+ * time of day is set, that hour has been reached), a backup runs.
  */
 class AutoBackup(
     classLoader: ClassLoader,
@@ -86,13 +88,15 @@ class AutoBackup(
         val last = WppCore.getPrivString(LAST_KEY, "0")?.toLongOrNull() ?: 0L
         // After a failure wait before retrying, so a persistent problem does not notify every check.
         val failedAt = WppCore.getPrivString(FAIL_KEY, "0")?.toLongOrNull() ?: 0L
-        val backupDue = now - last >= intervalHours * HOUR_MS &&
+        val hour = xprefs.getString("auto_backup_hour", "-1")?.toIntOrNull() ?: BackupSchedule.ANY_TIME
+        val backupDue = BackupSchedule.isDue(now, last, intervalHours, hour) &&
                 now - failedAt >= RETRY_AFTER_FAILURE_HOURS * HOUR_MS
         // Archives that could not be copied earlier (folder unavailable, device offline) are retried.
         val lastSync = WppCore.getPrivString(SYNC_KEY, "0")?.toLongOrNull() ?: 0L
         val syncDue = externalDir.isNotEmpty() && now - lastSync >= RETRY_AFTER_FAILURE_HOURS * HOUR_MS
         if (!backupDue && !syncDue) {
-            note("waiting: next backup in about ${((intervalHours * HOUR_MS - (now - last)) / HOUR_MS).coerceAtLeast(0)} h")
+            val next = BackupSchedule.nextRun(now, last, intervalHours, hour)
+            note("waiting: next backup at ${java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.US).format(next)}")
             return
         }
         if (!running.compareAndSet(false, true)) return

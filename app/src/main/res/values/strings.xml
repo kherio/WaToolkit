@@ -571,7 +571,7 @@
     <string name="strip_metadata_sum">Removes location, phone model, dates and author from the images WhatsApp reads from other apps (gallery, files, share). Orientation is kept. It does not cover XMP data or other file types.</string>
     <string name="auto_backup_category">Local backup</string>
     <string name="auto_backup">Scheduled encrypted backup</string>
-    <string name="auto_backup_sum">Saves your chats to an encrypted file on this device, without Google Drive. It runs when WhatsApp is opened and the interval has passed. Files are in Android/media/com.whatsapp/WaToolkit/Backups/Auto.</string>
+    <string name="auto_backup_sum">Saves your chats to an encrypted file on this device, without Google Drive. It runs while WhatsApp is running (or when you open it) once the interval has passed, at the chosen time of day if you set one. If the phone was off at that time, it runs as soon as WhatsApp is back. Files are in Android/media/com.whatsapp/WaToolkit/Backups/Auto.</string>
     <string name="auto_backup_password">Backup password</string>
     <string name="auto_backup_password_sum">Required. Used to encrypt the backups; it is stored in this module, so keep a copy: without it a backup cannot be opened.</string>
     <string name="auto_backup_interval">Backup interval</string>
@@ -606,4 +606,6 @@
     <string name="auto_backup_done_ext">Backup done (%1$s). %2$d file(s) copied to the external folder.</string>
     <string name="auto_backup_ext_synced">%1$d file(s) copied to the external folder.</string>
     <string name="auto_backup_ext_failed">Backup saved, but copying to the external folder failed: %1$s</string>
+    <string name="auto_backup_hour">Backup time</string>
+    <string name="auto_backup_hour_any">Any time (as soon as the interval passes)</string>
 </resources>

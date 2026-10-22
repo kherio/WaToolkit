@@ -198,6 +198,15 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
+            app:defaultValue="-1"
+            android:dependency="auto_backup"
+            app:entries="@array/auto_backup_hour_entries"
+            app:entryValues="@array/auto_backup_hour_values"
+            app:key="auto_backup_hour"
+            app:title="@string/auto_backup_hour"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
             android:dependency="auto_backup"
             app:defaultValue="3"
             app:entries="@array/auto_backup_keep_values"
