@@ -37,6 +37,17 @@ class PrivacyFragment : BasePreferenceFragment() {
                 true
             }
         }
+        findPreference<Preference>("auto_backup_now")?.setOnPreferenceClickListener {
+            val password = preferenceManager.sharedPreferences?.getString("auto_backup_password", "").orEmpty()
+            val ctx = requireContext()
+            if (password.isBlank()) {
+                Toast.makeText(ctx, R.string.backup_now_no_password, Toast.LENGTH_LONG).show()
+            } else if (!com.wmods.wppenhacer.toolkit.ToolRequest.request(
+                    ctx, com.wmods.wppenhacer.toolkit.ToolRequest.BACKUP_NOW, "com.whatsapp")) {
+                Toast.makeText(ctx, "WhatsApp", Toast.LENGTH_SHORT).show()
+            }
+            true
+        }
         findPreference<EditTextPreference>("auto_backup_password")?.setOnBindEditTextListener {
             it.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
         }

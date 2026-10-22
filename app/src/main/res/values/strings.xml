@@ -629,4 +629,9 @@
     <string name="about_issues">Report an issue</string>
     <string name="about_license">WaToolkit is free software under the GNU General Public License v3.0. Use it responsibly and in compliance with the terms of the apps you modify.</string>
     <string name="about_original">Original project: WaEnhancer by Dev4Mod</string>
+    <string name="backup_now">Back up now</string>
+    <string name="backup_now_sum">Opens WhatsApp and makes the encrypted backup right away, whatever the schedule says. It needs the password and uses the folder and media options above.</string>
+    <string name="backup_now_started">Backup started in the background…</string>
+    <string name="backup_now_running">A backup is already running.</string>
+    <string name="backup_now_no_password">Set a backup password first.</string>
 </resources>
