@@ -155,6 +155,17 @@ class EncryptedBackup(private val context: Context) {
             BackupArchive.extractDatabases(it, password, context.cacheDir, outDir)
         }
 
+    /** Encrypted media backups in the Auto folder, oldest first. */
+    fun listMediaBackups(): List<File> =
+        (outDir.listFiles { f -> f.isFile && f.name.startsWith("WaToolkit-media-") && f.name.endsWith(".wtbak") }
+            ?: emptyArray()).sortedBy { it.name }
+
+    /** Restores one media archive into WhatsApp's Media folder, keeping files that already exist. */
+    fun restoreMedia(file: File, password: CharArray): BackupArchive.MediaResult =
+        file.inputStream().buffered().use {
+            BackupArchive.extractMedia(it, password, File(Host.rootWhatsAppDir(context), "Media"))
+        }
+
     private fun prune(dir: File, prefix: String, keep: Int) {
         val old = (dir.listFiles { f -> f.isFile && f.name.startsWith(prefix) && f.name.endsWith(".wtbak") }
             ?: emptyArray()).sortedByDescending { it.name }

@@ -91,4 +91,49 @@ class BackupArchiveTest {
         } catch (_: BackupArchive.InvalidBackupException) {}
         assertFalse(out.exists())
     }
+
+    private fun extract(bytes: ByteArray, root: java.io.File, pw: String = "pw") =
+        BackupArchive.extractMedia(ByteArrayInputStream(bytes), pw.toCharArray(), root)
+
+    @Test
+    fun mediaIsRestoredAndExistingFilesKept() {
+        val root = tmp.newFolder("Media")
+        java.io.File(root, "Images").mkdirs()
+        java.io.File(root, "Images/a.jpg").writeText("current")
+        val a = archive(
+            "info.txt" to "x".toByteArray(),
+            "media/Images/a.jpg" to "old".toByteArray(),
+            "media/Images/b.jpg" to "new".toByteArray(),
+            "media/Voice/c.opus" to "voice".toByteArray()
+        )
+        val r = extract(a, root)
+        assertEquals(2, r.restored)
+        assertEquals(1, r.skipped)
+        assertEquals("current", java.io.File(root, "Images/a.jpg").readText())
+        assertEquals("new", java.io.File(root, "Images/b.jpg").readText())
+        assertEquals("voice", java.io.File(root, "Voice/c.opus").readText())
+    }
+
+    @Test
+    fun mediaPathsOutsideTheRootAreIgnored() {
+        val root = tmp.newFolder("Media2")
+        val a = archive(
+            "media/../evil.txt" to "x".toByteArray(),
+            "media//abs.txt" to "x".toByteArray(),
+            "other/file.txt" to "x".toByteArray(),
+            "media/ok.txt" to "ok".toByteArray()
+        )
+        val r = extract(a, root)
+        assertEquals(1, r.restored)
+        assertFalse(java.io.File(root.parentFile, "evil.txt").exists())
+        assertTrue(java.io.File(root, "ok.txt").exists())
+    }
+
+    @Test
+    fun mediaWithWrongPasswordFails() {
+        val root = tmp.newFolder("Media3")
+        val a = archive("media/a.txt" to "x".toByteArray())
+        try { extract(a, root, "other"); fail() } catch (_: BackupCrypto.WrongPasswordException) {}
+        assertFalse(java.io.File(root, "a.txt").exists())
+    }
 }
