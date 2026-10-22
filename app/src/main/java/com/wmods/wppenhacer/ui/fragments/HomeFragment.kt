@@ -79,6 +79,7 @@ class HomeFragment : BaseFragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         checkStateWpp(requireActivity())
+        setupHub(inflater)
 
         binding.rebootBtn.setOnClickListener { view ->
             animateClick(view)
@@ -125,6 +126,44 @@ class HomeFragment : BaseFragment() {
         startCardAnimations()
 
         return binding.root
+    }
+
+    /** The list of sections that replaces the old bottom navigation bar. */
+    private fun setupHub(inflater: LayoutInflater) {
+        val ctx = requireContext()
+        val main = activity as? com.wmods.wppenhacer.activities.MainActivity
+        binding.searchPill.setOnClickListener {
+            startActivity(Intent(ctx, com.wmods.wppenhacer.activities.SearchActivity::class.java))
+        }
+        val recordings = PreferenceManager.getDefaultSharedPreferences(ctx)
+            .getBoolean("call_recording_enable", false)
+        class Row(val page: Int, val title: Int, val sum: Int, val icon: Int, val color: Int)
+        val rows = mutableListOf(
+            Row(1, R.string.general, R.string.hub_general_sum, R.drawable.ic_general, 0xFF4A90E2.toInt()),
+            Row(2, R.string.privacy, R.string.hub_privacy_sum, R.drawable.ic_privacy, 0xFF8E5BE8.toInt()),
+            Row(3, R.string.media, R.string.hub_media_sum, R.drawable.ic_media, 0xFFE8892B.toInt()),
+            Row(4, R.string.perso, R.string.hub_custom_sum, R.drawable.ic_dashboard_black_24dp, 0xFFE0508F.toInt())
+        )
+        if (recordings) rows.add(Row(5, R.string.recordings_manager, R.string.hub_recordings_sum, R.drawable.ic_recording, 0xFFE25555.toInt()))
+        rows.add(Row(-1, R.string.toolkit_tab, R.string.hub_tools_sum, R.drawable.ic_toolkit, 0xFF1FA98A.toInt()))
+
+        binding.hubList.removeAllViews()
+        for (r in rows) {
+            val v = inflater.inflate(R.layout.item_hub_row, binding.hubList, false)
+            v.findViewById<android.widget.TextView>(R.id.hubTitle).setText(r.title)
+            v.findViewById<android.widget.TextView>(R.id.hubSummary).setText(r.sum)
+            v.findViewById<android.widget.ImageView>(R.id.hubIcon).apply {
+                setImageResource(r.icon)
+                imageTintList = android.content.res.ColorStateList.valueOf(r.color)
+            }
+            v.findViewById<View>(R.id.hubIconBg).backgroundTintList =
+                android.content.res.ColorStateList.valueOf(androidx.core.graphics.ColorUtils.setAlphaComponent(r.color, 40))
+            v.setOnClickListener {
+                if (r.page < 0) startActivity(Intent(ctx, com.wmods.wppenhacer.activities.ToolsActivity::class.java))
+                else main?.showPage(r.page)
+            }
+            binding.hubList.addView(v)
+        }
     }
 
     private fun startCardAnimations() {

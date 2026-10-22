@@ -608,4 +608,11 @@
     <string name="auto_backup_ext_failed">Backup saved, but copying to the external folder failed: %1$s</string>
     <string name="auto_backup_hour">Backup time</string>
     <string name="auto_backup_hour_any">Any time (as soon as the interval passes)</string>
+    <string name="hub_search">Search settings</string>
+    <string name="hub_general_sum">Home screen, conversations and notifications</string>
+    <string name="hub_privacy_sum">Read receipts, screenshot block and local backup</string>
+    <string name="hub_media_sum">Photo, video and status quality</string>
+    <string name="hub_custom_sum">Colors, themes and WhatsApp styles</string>
+    <string name="hub_recordings_sum">Recorded calls and their manager</string>
+    <string name="hub_tools_sum">Backups, compatibility check and chat import</string>
 </resources>

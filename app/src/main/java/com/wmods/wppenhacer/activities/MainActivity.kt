@@ -42,6 +42,23 @@ class MainActivity : BaseActivity() {
         setSupportActionBar(binding.toolbar)
 
         binding.viewPager.adapter = MainPagerAdapter(this)
+        // Navigation is a list of sections on the home page, not tabs: no swiping between them.
+        binding.viewPager.isUserInputEnabled = false
+        binding.navView.visibility = android.view.View.GONE
+        binding.navShadow.visibility = android.view.View.GONE
+        onBackPressedDispatcher.addCallback(this, object : androidx.activity.OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val page = supportFragmentManager.findFragmentByTag("f${binding.viewPager.currentItem}")
+                if (page != null && page.childFragmentManager.backStackEntryCount > 0) {
+                    page.childFragmentManager.popBackStack()
+                } else if (binding.viewPager.currentItem != 0) {
+                    binding.viewPager.setCurrentItem(0, true)
+                } else {
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
+                }
+            }
+        })
         binding.viewPager.setPageTransformer(DepthPageTransformer())
 
         val prefs = PreferenceManager.getDefaultSharedPreferences(this)
@@ -89,6 +106,7 @@ class MainActivity : BaseActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 binding.navView.menu.getItem(position).isChecked = true
+                updateTitleFor(position)
 
                 val scrollKey = pendingScrollToPreference
                 if (pendingScrollToFragment == position && scrollKey != null) {
@@ -107,6 +125,27 @@ class MainActivity : BaseActivity() {
         createMainDir()
         FilePicker.registerFilePicker(this)
         handleIncomingIntent(intent)
+    }
+
+    /** Opens one of the settings sections (1..5); 0 is the home list. */
+    fun showPage(position: Int) {
+        binding.viewPager.setCurrentItem(position, true)
+    }
+
+    fun isOnSection(): Boolean = binding.viewPager.currentItem != 0
+
+    private fun updateTitleFor(position: Int) {
+        val bar = supportActionBar ?: return
+        val title = when (position) {
+            1 -> R.string.general
+            2 -> R.string.privacy
+            3 -> R.string.media
+            4 -> R.string.perso
+            5 -> R.string.recordings_manager
+            else -> R.string.app_name
+        }
+        bar.setTitle(title)
+        bar.setDisplayHomeAsUpEnabled(position != 0)
     }
 
     private fun createMainDir() {

@@ -23,6 +23,8 @@ open class BaseFragment : Fragment() {
 
     fun setDisplayHomeAsUpEnabled(enabled: Boolean) {
         val actionBar = (activity as? AppCompatActivity)?.supportActionBar ?: return
-        actionBar.setDisplayHomeAsUpEnabled(enabled)
+        // Sections open from the home list, so they always show the back arrow.
+        val onSection = (activity as? com.wmods.wppenhacer.activities.MainActivity)?.isOnSection() == true
+        actionBar.setDisplayHomeAsUpEnabled(enabled || onSection)
     }
 }

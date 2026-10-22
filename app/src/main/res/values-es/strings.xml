@@ -553,4 +553,11 @@
     <string name="auto_backup_ext_failed">La copia se guardó, pero no se pudo copiar a la carpeta externa: %1$s</string>
     <string name="auto_backup_hour">Hora de la copia</string>
     <string name="auto_backup_hour_any">A cualquier hora (en cuanto pase el intervalo)</string>
+    <string name="hub_search">Buscar en los ajustes</string>
+    <string name="hub_general_sum">Pantalla de inicio, conversaciones y notificaciones</string>
+    <string name="hub_privacy_sum">Confirmaciones de lectura, bloqueo de capturas y copia local</string>
+    <string name="hub_media_sum">Calidad de fotos, vídeos y estados</string>
+    <string name="hub_custom_sum">Colores, temas y estilos de WhatsApp</string>
+    <string name="hub_recordings_sum">Llamadas grabadas y su gestor</string>
+    <string name="hub_tools_sum">Copias, comprobación de compatibilidad e importar chats</string>
 </resources>
