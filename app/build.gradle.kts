@@ -15,7 +15,7 @@ val gitHash: String = providers.exec {
 }.standardOutput.asText.map { it.trim().uppercase(Locale.getDefault()).substring(0,8) }.getOrElse("UNKNOWN")
 
 // Base version. Automatic releases bump the last number (1.6.1 -> 1.6.2 ...) by passing -PappVersion.
-val baseVersion = "1.6.1"
+val baseVersion = "2.0.0"
 val appVersion: String = (project.findProperty("appVersion") as String?)?.takeIf { it.isNotBlank() } ?: baseVersion
 val appVersionCode: Int = appVersion.split(".").map { it.toIntOrNull() ?: 0 }.let { p ->
     p.getOrElse(0) { 0 } * 10000 + p.getOrElse(1) { 0 } * 100 + p.getOrElse(2) { 0 }
