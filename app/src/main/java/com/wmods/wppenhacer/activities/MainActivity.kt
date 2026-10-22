@@ -128,7 +128,12 @@ class MainActivity : BaseActivity() {
     }
 
     /** Opens one of the settings sections (1..5); 0 is the home list. */
-    fun showPage(position: Int) {
+    fun showPage(position: Int, scrollToPreference: String? = null) {
+        if (scrollToPreference != null) {
+            pendingScrollToPreference = scrollToPreference
+            pendingScrollToFragment = position
+            pendingParentKey = null
+        }
         binding.viewPager.setCurrentItem(position, true)
     }
 

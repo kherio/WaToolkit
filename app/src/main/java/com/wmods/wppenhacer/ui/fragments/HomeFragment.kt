@@ -137,10 +137,11 @@ class HomeFragment : BaseFragment() {
         }
         val recordings = PreferenceManager.getDefaultSharedPreferences(ctx)
             .getBoolean("call_recording_enable", false)
-        class Row(val page: Int, val title: Int, val sum: Int, val icon: Int, val color: Int)
+        class Row(val page: Int, val title: Int, val sum: Int, val icon: Int, val color: Int, val scrollKey: String? = null)
         val rows = mutableListOf(
             Row(1, R.string.general, R.string.hub_general_sum, R.drawable.ic_general, 0xFF4A90E2.toInt()),
             Row(2, R.string.privacy, R.string.hub_privacy_sum, R.drawable.ic_privacy, 0xFF8E5BE8.toInt()),
+            Row(2, R.string.auto_backup_category, R.string.hub_backup_sum, R.drawable.ic_restore, 0xFF3FA7D6.toInt(), "auto_backup"),
             Row(3, R.string.media, R.string.hub_media_sum, R.drawable.ic_media, 0xFFE8892B.toInt()),
             Row(4, R.string.perso, R.string.hub_custom_sum, R.drawable.ic_dashboard_black_24dp, 0xFFE0508F.toInt())
         )
@@ -160,7 +161,7 @@ class HomeFragment : BaseFragment() {
                 android.content.res.ColorStateList.valueOf(androidx.core.graphics.ColorUtils.setAlphaComponent(r.color, 40))
             v.setOnClickListener {
                 if (r.page < 0) startActivity(Intent(ctx, com.wmods.wppenhacer.activities.ToolsActivity::class.java))
-                else main?.showPage(r.page)
+                else main?.showPage(r.page, r.scrollKey)
             }
             binding.hubList.addView(v)
         }

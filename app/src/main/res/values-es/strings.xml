@@ -561,4 +561,17 @@
     <string name="hub_recordings_sum">Llamadas grabadas y su gestor</string>
     <string name="hub_tools_sum">Copias, comprobación de compatibilidad e importar chats</string>
     <string name="home_module_summary">Módulo %1$s · Android %2$s (SDK %3$d) · %4$s</string>
+    <string name="hub_backup_sum">Copia cifrada programada, hora y carpeta externa</string>
+    <string name="about_by_kherio">por kherio</string>
+    <string name="about_origin_title">Origen</string>
+    <string name="about_origin">WaToolkit nació como un fork de WaEnhancer, de Dev4Mod y sus colaboradores, publicado bajo la licencia GPL-3.0, y mantiene su reconocimiento. Todos los cambios posteriores al fork, incluidos el Toolkit, la nueva interfaz y cada función de la lista siguiente, son obra de kherio.</string>
+    <string name="about_changes_title">Qué ha cambiado desde el fork</string>
+    <string name="about_changes">• Nueva pantalla de inicio con el estado del módulo, de WhatsApp y de las actualizaciones, y una lista de secciones con buscador\n• Interfaz plana y de letra más grande en todas las secciones de ajustes\n• Copia local cifrada programada, con hora, intervalo, número de copias y multimedia, y restauración desde la app\n• Copia de las copias a una carpeta externa (por ejemplo una sincronizada con Syncthing)\n• Comprobación de compatibilidad que indica qué funciona con tu versión de WhatsApp\n• Bloqueo de capturas por chat y eliminación de metadatos\n• Actualizaciones desde la propia app con las releases de este repositorio, con notas generadas\n• Importar chats desde la exportación TXT/ZIP de WhatsApp\n• Listas de contactos para llamadas, arreglos para WhatsApp 2.26.x y soporte de WhatsApp Business eliminado\n• Código fuente, comentarios y textos del proyecto traducidos al inglés</string>
+    <string name="about_links_title">Enlaces</string>
+    <string name="about_profile">kherio en GitHub</string>
+    <string name="about_repo">Repositorio de WaToolkit</string>
+    <string name="about_releases">Versiones y cambios</string>
+    <string name="about_issues">Informar de un problema</string>
+    <string name="about_license">WaToolkit es software libre bajo la licencia GNU General Public License v3.0. Úsalo con responsabilidad y respetando los términos de las apps que modificas.</string>
+    <string name="about_original">Proyecto original: WaEnhancer de Dev4Mod</string>
 </resources>

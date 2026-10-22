@@ -616,4 +616,17 @@
     <string name="hub_recordings_sum">Recorded calls and their manager</string>
     <string name="hub_tools_sum">Backups, compatibility check and chat import</string>
     <string name="home_module_summary">Module %1$s · Android %2$s (SDK %3$d) · %4$s</string>
+    <string name="hub_backup_sum">Encrypted scheduled backup, time of day and external folder</string>
+    <string name="about_by_kherio">by kherio</string>
+    <string name="about_origin_title">Origin</string>
+    <string name="about_origin">WaToolkit started as a fork of WaEnhancer by Dev4Mod and its contributors, published under the GPL-3.0 license, and keeps their credit. All changes made after the fork, including the Toolkit, the new interface and every feature listed below, are the work of kherio.</string>
+    <string name="about_changes_title">What changed since the fork</string>
+    <string name="about_changes">• New home page with module, WhatsApp and update status, and a list of sections with search\n• Flat, larger interface for every settings section\n• Scheduled encrypted local backup with a chosen time, interval, number of copies and media, plus restore from the app\n• Copy of the backups to an external folder (for example one kept in sync by Syncthing)\n• Compatibility check that reports what works with your WhatsApp version\n• Screenshot block per chat and metadata stripping\n• In-app updates from the releases of this repository, with generated release notes\n• Import chats from the WhatsApp TXT/ZIP export\n• Call contact lists, fixes for WhatsApp 2.26.x and WhatsApp Business support removed\n• Source code, comments and project text translated to English</string>
+    <string name="about_links_title">Links</string>
+    <string name="about_profile">kherio on GitHub</string>
+    <string name="about_repo">WaToolkit repository</string>
+    <string name="about_releases">Releases and changelog</string>
+    <string name="about_issues">Report an issue</string>
+    <string name="about_license">WaToolkit is free software under the GNU General Public License v3.0. Use it responsibly and in compliance with the terms of the apps you modify.</string>
+    <string name="about_original">Original project: WaEnhancer by Dev4Mod</string>
 </resources>
