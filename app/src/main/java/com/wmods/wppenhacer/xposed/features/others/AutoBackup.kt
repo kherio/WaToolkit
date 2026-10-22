@@ -40,6 +40,18 @@ class AutoBackup(
 
     private var lastNote: String? = null
 
+    @Volatile
+    private var phase: String? = null
+
+    @Volatile
+    private var phaseSince = 0L
+
+    private fun setPhase(value: String?) {
+        phase = value
+        if (value != null) phaseSince = System.currentTimeMillis()
+        if (value != null && !value.contains(" of ")) Diagnostics.event("AutoBackup", value)
+    }
+
     /** Records why a check did nothing (only when the reason changes), visible in the compatibility report. */
     private fun note(message: String) {
         if (message == lastNote) return
@@ -104,7 +116,10 @@ class AutoBackup(
             return
         }
         if (!running.compareAndSet(false, true)) {
-            if (force) toast(R.string.backup_now_running)
+            if (force) {
+                val minutes = ((System.currentTimeMillis() - phaseSince) / 60_000).coerceAtLeast(0)
+                toast(R.string.backup_now_running, phase ?: "…", minutes)
+            }
             return
         }
         lastNote = null
@@ -114,19 +129,33 @@ class AutoBackup(
         Thread {
             try {
                 val backup = EncryptedBackup(Utils.application)
+                val chars = password.toCharArray()
                 var total = 0L
+                var copied = 0
+                var externalError: String? = null
+
+                // Copies what is in the Auto folder to the external folder right away, so the
+                // database archive is there even while a long media backup is still running.
+                fun sync(stage: String) {
+                    if (externalDir.isEmpty()) return
+                    setPhase("copying to the external folder ($stage)")
+                    WppCore.setPrivString(SYNC_KEY, System.currentTimeMillis().toString())
+                    try {
+                        copied += syncExternal(backup, externalDir, keep).copied
+                    } catch (e: Throwable) {
+                        logDebug(e)
+                        externalError = e.message ?: e.javaClass.simpleName
+                        Diagnostics.event("AutoBackup", "external copy failed: $externalError")
+                    }
+                }
+
                 if (backupDue) {
                     try {
-                        val chars = password.toCharArray()
+                        setPhase("backing up the databases")
                         total = backup.createDatabaseBackup(chars, keep).sizeBytes
-                        if (includeMedia) {
-                            val since = WppCore.getPrivString(MEDIA_KEY, "0")?.toLongOrNull() ?: 0L
-                            backup.createMediaBackup(chars, since)?.let { total += it.sizeBytes }
-                            WppCore.setPrivString(MEDIA_KEY, now.toString())
-                        }
+                        Diagnostics.event("AutoBackup", "database backup created (${total / 1024} KB)")
                         WppCore.setPrivString(LAST_KEY, now.toString())
                         WppCore.setPrivString(FAIL_KEY, "0")
-                        Diagnostics.event("AutoBackup", "backup created (${total / 1024} KB)")
                     } catch (e: Throwable) {
                         logDebug(e)
                         Diagnostics.event("AutoBackup", "backup failed: ${e.message ?: e.javaClass.simpleName}")
@@ -137,32 +166,48 @@ class AutoBackup(
                         return@Thread
                     }
                 }
+                if (backupDue || syncDue) sync("databases")
+
+                if (backupDue && includeMedia) {
+                    try {
+                        val since = WppCore.getPrivString(MEDIA_KEY, "0")?.toLongOrNull() ?: 0L
+                        setPhase("backing up the media")
+                        val media = backup.createMediaBackup(chars, since) { done, count ->
+                            setPhase("backing up the media ($done of $count files)")
+                        }
+                        WppCore.setPrivString(MEDIA_KEY, now.toString())
+                        if (media != null) {
+                            total += media.sizeBytes
+                            Diagnostics.event("AutoBackup", "media backup created (${media.files} files, ${media.sizeBytes / 1048576} MB)")
+                            sync("media")
+                        }
+                    } catch (e: Throwable) {
+                        logDebug(e)
+                        Diagnostics.event("AutoBackup", "media backup failed: ${e.message ?: e.javaClass.simpleName}")
+                        notify(R.string.auto_backup_failed, e.message ?: e.javaClass.simpleName)
+                    }
+                }
+
                 val size = "%.1f MB".format(total / 1048576.0)
-                if (externalDir.isEmpty()) {
-                    if (backupDue) {
+                val err = externalError
+                when {
+                    err != null -> {
+                        if (backupDue) toast(R.string.auto_backup_done, size)
+                        notify(R.string.auto_backup_ext_failed, err)
+                    }
+                    externalDir.isEmpty() -> if (backupDue) {
                         toast(R.string.auto_backup_done, size)
                         notify(R.string.auto_backup_done, size)
                     }
-                    return@Thread
-                }
-                WppCore.setPrivString(SYNC_KEY, System.currentTimeMillis().toString())
-                try {
-                    val report = syncExternal(backup, externalDir, keep)
-                    if (backupDue) {
-                        toast(R.string.auto_backup_done_ext, size, report.copied)
-                        notify(R.string.auto_backup_done_ext, size, report.copied)
-                    } else if (report.copied > 0) {
-                        notify(R.string.auto_backup_ext_synced, report.copied)
+                    backupDue -> {
+                        toast(R.string.auto_backup_done_ext, size, copied)
+                        notify(R.string.auto_backup_done_ext, size, copied)
                     }
-                } catch (e: Throwable) {
-                    logDebug(e)
-                    Diagnostics.event("AutoBackup", "external copy failed: ${e.message}")
-                    val reason = e.message ?: e.javaClass.simpleName
-                    // The backup itself is fine; only the extra copy failed.
-                    if (backupDue) toast(R.string.auto_backup_done, size)
-                    notify(R.string.auto_backup_ext_failed, reason)
+                    copied > 0 -> notify(R.string.auto_backup_ext_synced, copied)
                 }
+                Diagnostics.event("AutoBackup", "finished")
             } finally {
+                setPhase(null)
                 running.set(false)
             }
         }.apply {

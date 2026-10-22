@@ -53,13 +53,14 @@ class EncryptedBackup(private val context: Context) {
     }
 
     /** Backs up media files modified after [sinceMs]. Returns null when there is nothing new. */
-    fun createMediaBackup(password: CharArray, sinceMs: Long): Result? {
+    fun createMediaBackup(password: CharArray, sinceMs: Long, onProgress: ((done: Int, total: Int) -> Unit)? = null): Result? {
         val mediaRoot = File(Host.rootWhatsAppDir(context), "Media")
         val files = mediaRoot.walkTopDown()
             .onEnter { !it.name.startsWith(".") || it == mediaRoot }
             .filter { it.isFile && !it.name.startsWith(".") && it.lastModified() > sinceMs }
             .toList()
         if (files.isEmpty()) return null
+        onProgress?.invoke(0, files.size)
         val dir = outDir
         if (dir.usableSpace < files.sumOf { it.length() } * 11 / 10) throw NoSpaceException()
 
@@ -72,6 +73,7 @@ class EncryptedBackup(private val context: Context) {
                 } catch (_: IOException) {
                     // A file that disappears or cannot be read is skipped.
                 }
+                if (onProgress != null && (count % 50 == 0)) onProgress(count, files.size)
             }
             count
         }
