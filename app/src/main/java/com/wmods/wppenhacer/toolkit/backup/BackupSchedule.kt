@@ -15,10 +15,12 @@ object BackupSchedule {
      */
     fun isDue(now: Long, lastBackup: Long, intervalHours: Long, hourOfDay: Int): Boolean {
         if (hourOfDay !in 0..23) return now - lastBackup >= intervalHours * HOUR_MS
-        // With a fixed hour, only the slot that already passed counts: a backup is due when that
-        // slot is at least one interval (minus an hour of tolerance) after the last backup.
+        // With a fixed hour, the day is split into slots (one per day at that hour). A backup is due
+        // when the latest slot is at least one interval (minus an hour of tolerance) after the slot
+        // the last backup belongs to, so a manual or late backup does not push the next one a day away.
         val slot = latestSlot(now, hourOfDay)
-        return slot - lastBackup >= (intervalHours - 1).coerceAtLeast(1) * HOUR_MS
+        val lastSlot = latestSlot(lastBackup, hourOfDay)
+        return slot - lastSlot >= (intervalHours - 1).coerceAtLeast(1) * HOUR_MS
     }
 
     /** The most recent moment at or before [now] whose local time is [hourOfDay]:00. */
