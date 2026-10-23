@@ -219,7 +219,7 @@ class AutoBackup(
 
     /** Copies the archives to the external folder through the module app, which can write there. */
     private fun syncExternal(backup: EncryptedBackup, dir: String, keep: Int): ExternalCopy.Report {
-        val bridge = WppCore.getClientBridge() ?: throw IOException("The module app is not reachable")
+        val bridge = awaitBridge()
         val report = ExternalCopy.sync(backup.allArchives(), BridgeTarget(bridge, dir), keep)
         Diagnostics.event(
             "AutoBackup",
@@ -227,6 +227,27 @@ class AutoBackup(
         )
         if (report.failed > 0) throw IOException(report.error ?: "Copy failed")
         return report
+    }
+
+    /**
+     * The connection to the module app is dropped when its process is stopped (common overnight).
+     * [WppCore.getClientBridge] starts the reconnection in the background and fails right away, so
+     * wait here (this runs on the backup thread) until the module app is up and bound.
+     */
+    private fun awaitBridge(): com.wmods.wppenhacer.xposed.bridge.WaeIIFace {
+        var last: Throwable? = null
+        val deadline = System.currentTimeMillis() + BRIDGE_WAIT_MS
+        while (true) {
+            try {
+                WppCore.getClientBridge()?.let { return it }
+            } catch (t: Throwable) {
+                last = t
+            }
+            if (System.currentTimeMillis() >= deadline) break
+            Thread.sleep(2000)
+        }
+        Diagnostics.event("AutoBackup", "the module app could not be reached: ${last?.message}")
+        throw IOException("The module app is not reachable (${last?.message ?: "no answer"})")
     }
 
     private fun toast(res: Int, vararg args: Any) {
@@ -271,6 +292,7 @@ class AutoBackup(
         }
 
         private const val HOUR_MS = 3_600_000L
+        private const val BRIDGE_WAIT_MS = 40_000L
         private const val LAST_KEY = "auto_backup_last"
         private const val MEDIA_KEY = "auto_backup_media_last"
         private const val SYNC_KEY = "auto_backup_external_last"
