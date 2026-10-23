@@ -56,4 +56,20 @@ class BackupScheduleTest {
         val next = BackupSchedule.nextRun(now, at(10, 3, 5), 24, 3)
         assertEquals(at(11, 3), next)
     }
+
+    @Test
+    fun aManualBackupDoesNotSkipTheNextScheduledOne() {
+        // Manual backup at 10:40; the next 03:00 slot is only 16 hours later but is still due.
+        val last = at(9, 10, 40)
+        assertFalse(BackupSchedule.isDue(at(10, 2, 59), last, 24, 3))
+        assertTrue(BackupSchedule.isDue(at(10, 3, 5), last, 24, 3))
+    }
+
+    @Test
+    fun aLateBackupDoesNotSkipTheNextSlot() {
+        // Caught up at 08:00 after a missed 03:00 slot; the next slot is due the following night.
+        val last = at(10, 8, 0)
+        assertFalse(BackupSchedule.isDue(at(10, 20), last, 24, 3))
+        assertTrue(BackupSchedule.isDue(at(11, 3, 0), last, 24, 3))
+    }
 }
