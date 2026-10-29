@@ -150,6 +150,13 @@ object FeatureLoader : YukiBaseHooker() {
         if (isSupported) return
 
         disableExpirationVersion(application.classLoader)
+        // A newer build of a branch we already support (e.g. 2.26.43 when 2.26.42 is listed) is loaded
+        // anyway: every feature resolves its own hooks and reports a failure on its own, so one change in
+        // WhatsApp only disables that feature instead of the whole module.
+        if (isKnownBranch(versionName)) {
+            YukiLog.log("Unlisted version $versionName of a supported branch, loading hooks anyway")
+            return
+        }
         if (!pref.getBoolean("bypass_version_check", false)) {
             throw Exception(
                 """
@@ -158,6 +165,13 @@ object FeatureLoader : YukiBaseHooker() {
                 """.trimIndent()
             )
         }
+    }
+
+    /** True when [versionName] shares its "major.minor." prefix (e.g. "2.26.") with a supported entry. */
+    private fun isKnownBranch(versionName: String): Boolean {
+        fun branch(v: String) = v.split(".").take(2).joinToString(".") + "."
+        val current = branch(versionName)
+        return supportedVersions.any { branch(it) == current }
     }
 
     @JvmStatic
