@@ -2002,6 +2002,30 @@ object Unobfuscator {
         }
     }
 
+    /**
+     * Material's BottomNavigationView. Up to WhatsApp 2.26.41 it keeps its name; from 2.26.42 it is
+     * renamed, so it is found by its getMaxItemCount() override, which returns 5 (the rail view returns 7).
+     */
+    @JvmStatic
+    @Throws(Exception::class)
+    fun loadBottomNavigationViewClass(classLoader: ClassLoader): Class<*> {
+        return UnobfuscatorCache.getInstance().getClass(classLoader) {
+            val named = bridge.findClass {
+                matcher { className(".BottomNavigationView", StringMatchType.EndsWith) }
+            }.firstOrNull()
+            if (named != null) return@getClass named.getInstance(classLoader)
+            val method = bridge.findMethod {
+                matcher {
+                    name("getMaxItemCount")
+                    returnType(Int::class.javaPrimitiveType!!)
+                    paramCount(0)
+                    usingNumbers(5)
+                }
+            }.firstOrNull() ?: throw RuntimeException("BottomNavigationView class not found")
+            method.getMethodInstance(classLoader).declaringClass
+        }
+    }
+
     @JvmStatic
     @Throws(Exception::class)
     fun loadExpirationClass(classLoader: ClassLoader): Class<*> {
