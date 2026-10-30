@@ -2967,17 +2967,16 @@ object Unobfuscator {
     }
 
     /**
-     * Implementations of "does the user have WhatsApp Plus?". Every no-argument boolean interface call made
-     * by the Plus notice check is returned: in 2.26.42 the call order changed (a call that was a class method
-     * became an interface one), so the Plus check can no longer be told apart by its position. The caller only
-     * forces them while the pin routine runs.
+     * Implementations of "does the user have WhatsApp Plus?". The notice check makes several no-argument
+     * boolean interface calls; the Plus one is the first call of the interface that is called the most
+     * (in 2.26.42 an extra call to a different interface appeared before it, so "the first call" is not enough).
      */
     @Throws(Exception::class)
     @JvmStatic
     fun loadPremiumCheckMethods(classLoader: ClassLoader): Array<Method> {
         return UnobfuscatorCache.getInstance().getMethods(classLoader) {
             val (data, _) = findPinnedUpsellCheck(classLoader)
-            val list = LinkedHashSet<Method>()
+            val calls = ArrayList<Method>()
             for (invoke in data.invokes) {
                 if (!invoke.isMethod) continue
                 val called = try {
@@ -2988,19 +2987,24 @@ object Unobfuscator {
                 if (!called.declaringClass.isInterface || called.parameterCount != 0 ||
                     called.returnType != Boolean::class.javaPrimitiveType
                 ) continue
-                val implementations = bridge.findClass {
-                    matcher { addInterface(called.declaringClass.name) }
-                }
-                for (impl in implementations) {
-                    val clazz = impl.getInstance(classLoader)
-                    for (m in clazz.declaredMethods) {
-                        if (m.name == called.name && m.parameterCount == 0 &&
-                            m.returnType == Boolean::class.javaPrimitiveType
-                        ) list.add(m)
-                    }
+                calls.add(called)
+            }
+            val called = calls.groupBy { it.declaringClass }.values
+                .maxByOrNull { it.size }?.first()
+                ?: throw NoSuchMethodException("Premium check method not found")
+            val list = ArrayList<Method>()
+            val implementations = bridge.findClass {
+                matcher { addInterface(called.declaringClass.name) }
+            }
+            for (impl in implementations) {
+                val clazz = impl.getInstance(classLoader)
+                for (m in clazz.declaredMethods) {
+                    if (m.name == called.name && m.parameterCount == 0 &&
+                        m.returnType == Boolean::class.javaPrimitiveType
+                    ) list.add(m)
                 }
             }
-            if (list.isEmpty()) throw NoSuchMethodException("Premium check method not found")
+            if (list.isEmpty()) throw NoSuchMethodException("Premium check implementations not found")
             list.toTypedArray()
         }
     }
