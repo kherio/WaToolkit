@@ -65,18 +65,30 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
         addMenuItem { menu, activity ->
             this.insertOpenWae(
                 menu,
-                activity
+                activity,
+                action
             )
         }
     }
 
-    private fun insertOpenWae(menu: Menu, activity: Activity) {
+    private fun insertOpenWae(menu: Menu, activity: Activity, newSettings: Boolean) {
         val waeMenu = xprefs.getBoolean("open_wae", true)
         if (!waeMenu) return
-        val itemMenu = menu.add(0, 0, 9999, " " + activity.getString(R.string.app_name))
-        val iconDraw = DesignUtils.getDrawableByName("ic_settings")
-        iconDraw!!.setTint(-0x796960)
+        // With the toolbar buttons enabled it is the first icon of the bar (left of the camera);
+        // otherwise it stays at the end of the overflow menu.
+        val itemMenu = menu.add(
+            0, 0, if (newSettings) TOOLBAR_FIRST_ORDER else 9999,
+            " " + activity.getString(R.string.app_name)
+        )
+        val iconDraw = if (newSettings) {
+            activity.getDrawable(R.drawable.ic_open_module)?.apply { setTint(DesignUtils.getPrimaryTextColor()) }
+        } else {
+            DesignUtils.getDrawableByName("ic_settings")?.apply { setTint(-0x796960) }
+        }
         itemMenu.icon = iconDraw
+        if (newSettings) {
+            itemMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        }
         itemMenu.setOnMenuItemClickListener {
             try {
                 val intent = activity.packageManager.getLaunchIntentForPackage(
@@ -248,6 +260,7 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
 
     companion object {
         private val menuItems = CopyOnWriteArraySet<HomeMenuItem>()
+        private const val TOOLBAR_FIRST_ORDER = -10000
 
         @JvmStatic
         fun addMenuItem(homeMenuItem: HomeMenuItem) {
