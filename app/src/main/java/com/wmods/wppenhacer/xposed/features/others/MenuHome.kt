@@ -77,10 +77,12 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
             Diagnostics.event("MenuHome", "open module button is disabled in the settings")
             return
         }
-        // With the toolbar buttons enabled it is the first icon of the bar (left of the camera);
-        // otherwise it stays at the end of the overflow menu.
+        if (menu.findItem(OPEN_MODULE_ITEM_ID) != null) return
+        // With the toolbar buttons enabled it is added before WhatsApp fills the menu (see hookMenu), so with the
+        // same order (0) it ends up as the first icon, left of the camera; otherwise it stays at the end of the
+        // overflow menu. Android only accepts orders from 0 to 65535, so a negative one cannot be used.
         val itemMenu = menu.add(
-            0, 0, if (newSettings) TOOLBAR_FIRST_ORDER else 9999,
+            0, OPEN_MODULE_ITEM_ID, if (newSettings) 0 else 9999,
             " " + activity.getString(R.string.app_name)
         )
         val iconDraw = try {
@@ -252,6 +254,16 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
             superclass()
             parameters(Menu::class.java)
         }.hook {
+            before {
+                // Added first so it is the first icon of the bar; the check in insertOpenWae avoids a duplicate later.
+                if (xprefs.getBoolean("buttonaction", true)) {
+                    try {
+                        insertOpenWae(args[0] as Menu, instance as Activity, true)
+                    } catch (t: Throwable) {
+                        Diagnostics.event("MenuHome", "open module button failed: $t")
+                    }
+                }
+            }
             after {
                 val menu = args[0] as Menu
                 val activity = instance as Activity
@@ -276,7 +288,7 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
 
     companion object {
         private val menuItems = CopyOnWriteArraySet<HomeMenuItem>()
-        private const val TOOLBAR_FIRST_ORDER = -10000
+        private const val OPEN_MODULE_ITEM_ID = 0x57544B01
 
         @JvmStatic
         fun addMenuItem(homeMenuItem: HomeMenuItem) {
