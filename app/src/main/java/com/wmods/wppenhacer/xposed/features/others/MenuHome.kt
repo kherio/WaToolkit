@@ -9,6 +9,7 @@ import android.view.MenuItem
 import com.highcapable.kavaref.KavaRef.Companion.resolve
 import com.wmods.wppenhacer.BuildConfig
 import com.wmods.wppenhacer.R
+import com.wmods.wppenhacer.xposed.core.Diagnostics
 import com.wmods.wppenhacer.xposed.core.Feature
 import com.wmods.wppenhacer.xposed.core.WppCore.getPrivBoolean
 import com.wmods.wppenhacer.xposed.core.WppCore.homeActivityClass
@@ -72,23 +73,34 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
     }
 
     private fun insertOpenWae(menu: Menu, activity: Activity, newSettings: Boolean) {
-        val waeMenu = xprefs.getBoolean("open_wae", true)
-        if (!waeMenu) return
+        if (!xprefs.getBoolean("open_wae", true)) {
+            Diagnostics.event("MenuHome", "open module button is disabled in the settings")
+            return
+        }
         // With the toolbar buttons enabled it is the first icon of the bar (left of the camera);
         // otherwise it stays at the end of the overflow menu.
         val itemMenu = menu.add(
             0, 0, if (newSettings) TOOLBAR_FIRST_ORDER else 9999,
             " " + activity.getString(R.string.app_name)
         )
-        val iconDraw = if (newSettings) {
-            activity.getDrawable(R.drawable.ic_open_module)?.apply { setTint(DesignUtils.getPrimaryTextColor()) }
-        } else {
-            DesignUtils.getDrawableByName("ic_settings")?.apply { setTint(-0x796960) }
-        }
+        val iconDraw = try {
+            if (newSettings) {
+                activity.getDrawable(R.drawable.ic_open_module)?.apply { setTint(DesignUtils.getPrimaryTextColor()) }
+            } else {
+                DesignUtils.getDrawableByName("ic_settings")?.apply { setTint(-0x796960) }
+            }
+        } catch (t: Throwable) {
+            Diagnostics.event("MenuHome", "open module icon failed: $t")
+            null
+        } ?: DesignUtils.getDrawableByName("ic_settings")?.apply { setTint(DesignUtils.getPrimaryTextColor()) }
         itemMenu.icon = iconDraw
         if (newSettings) {
             itemMenu.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
         }
+        Diagnostics.event(
+            "MenuHome",
+            "open module button added (icon=${iconDraw != null}, toolbar=$newSettings, items=${menu.size()})"
+        )
         itemMenu.setOnMenuItemClickListener {
             try {
                 val intent = activity.packageManager.getLaunchIntentForPackage(
@@ -244,7 +256,11 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
                 val menu = args[0] as Menu
                 val activity = instance as Activity
                 for (menuItem in menuItems) {
-                    menuItem.addMenu(menu, activity)
+                    try {
+                        menuItem.addMenu(menu, activity)
+                    } catch (t: Throwable) {
+                        Diagnostics.event("MenuHome", "menu item failed: $t")
+                    }
                 }
             }
         }
