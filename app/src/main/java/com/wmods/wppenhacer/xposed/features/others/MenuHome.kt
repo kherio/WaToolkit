@@ -78,9 +78,8 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
             return
         }
         if (menu.findItem(OPEN_MODULE_ITEM_ID) != null) return
-        // With the toolbar buttons enabled it is added before WhatsApp fills the menu (see hookMenu), so with the
-        // same order (0) it ends up as the first icon, left of the camera; otherwise it stays at the end of the
-        // overflow menu. Android only accepts orders from 0 to 65535, so a negative one cannot be used.
+        // With the toolbar buttons enabled it is a toolbar icon (moved to the first position afterwards, see
+        // moveOpenModuleFirst); otherwise it stays at the end of the overflow menu.
         val itemMenu = menu.add(
             0, OPEN_MODULE_ITEM_ID, if (newSettings) 0 else 9999,
             " " + activity.getString(R.string.app_name)
@@ -248,22 +247,40 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
         }
     }
 
+    /**
+     * Puts the module button at the start of the menu, left of the camera. Android does not allow an order
+     * lower than WhatsApp's own items (0), and adding it before WhatsApp fills the menu hides WhatsApp's
+     * overflow entries, so it is moved inside the menu's own item list once everything has been added.
+     */
+    private fun moveOpenModuleFirst(menu: Menu) {
+        try {
+            val item = menu.findItem(OPEN_MODULE_ITEM_ID) ?: return
+            var cls: Class<*>? = menu.javaClass
+            while (cls != null && cls != Any::class.java) {
+                for (field in cls.declaredFields) {
+                    if (!java.util.ArrayList::class.java.isAssignableFrom(field.type) && field.type != List::class.java) continue
+                    field.isAccessible = true
+                    val list = field.get(menu) as? java.util.ArrayList<Any?> ?: continue
+                    if (list.size > 1 && list.contains(item) && list[0] !== item) {
+                        list.remove(item)
+                        list.add(0, item)
+                        Diagnostics.event("MenuHome", "open module button moved to the first position")
+                        return
+                    }
+                }
+                cls = cls.superclass
+            }
+        } catch (t: Throwable) {
+            Diagnostics.event("MenuHome", "could not move the open module button: $t")
+        }
+    }
+
     private fun hookMenu() {
         homeActivityClass.resolve().firstMethod {
             name = "onCreateOptionsMenu"
             superclass()
             parameters(Menu::class.java)
         }.hook {
-            before {
-                // Added first so it is the first icon of the bar; the check in insertOpenWae avoids a duplicate later.
-                if (xprefs.getBoolean("buttonaction", true)) {
-                    try {
-                        insertOpenWae(args[0] as Menu, instance as Activity, true)
-                    } catch (t: Throwable) {
-                        Diagnostics.event("MenuHome", "open module button failed: $t")
-                    }
-                }
-            }
             after {
                 val menu = args[0] as Menu
                 val activity = instance as Activity
@@ -274,6 +291,7 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
                         Diagnostics.event("MenuHome", "menu item failed: $t")
                     }
                 }
+                moveOpenModuleFirst(menu)
             }
         }
     }
