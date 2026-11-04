@@ -102,7 +102,7 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
             "MenuHome",
             "open module button added (icon=${iconDraw != null}, toolbar=$newSettings, items=${menu.size()})"
         )
-        itemMenu.setOnMenuItemClickListener {
+        val open = MenuItem.OnMenuItemClickListener {
             try {
                 val intent = activity.packageManager.getLaunchIntentForPackage(
                     BuildConfig.APPLICATION_ID
@@ -113,6 +113,14 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
                 Utils.showToast(e.message)
             }
             true
+        }
+        itemMenu.setOnMenuItemClickListener(open)
+
+        // The entry in the overflow menu (above WhatsApp's settings) stays next to the toolbar icon.
+        if (newSettings) {
+            val overflow = menu.add(0, OPEN_MODULE_OVERFLOW_ID, 9999, " " + activity.getString(R.string.app_name))
+            overflow.icon = DesignUtils.getDrawableByName("ic_settings")?.apply { setTint(-0x796960) }
+            overflow.setOnMenuItemClickListener(open)
         }
     }
 
@@ -307,6 +315,7 @@ class MenuHome(classLoader: ClassLoader, preferences: SharedPreferences) :
     companion object {
         private val menuItems = CopyOnWriteArraySet<HomeMenuItem>()
         private const val OPEN_MODULE_ITEM_ID = 0x57544B01
+        private const val OPEN_MODULE_OVERFLOW_ID = 0x57544B02
 
         @JvmStatic
         fun addMenuItem(homeMenuItem: HomeMenuItem) {
