@@ -68,6 +68,13 @@ class Toolkit(classLoader: ClassLoader, preferences: SharedPreferences) :
                 ToolRequest.RECOVER -> RecoverChatFlow(activity).start()
                 ToolRequest.BACKUP -> BackupFlow(activity).start()
                 ToolRequest.BACKUP_NOW -> AutoBackup.runNow()
+                ToolRequest.RESTART -> com.wmods.wppenhacer.xposed.utils.Utils.doRestart(activity)
+                ToolRequest.CLEAR_CACHE -> {
+                    // Only the cache folders (internal and external): chats, media and settings are not touched.
+                    val dirs = listOfNotNull(activity.cacheDir) + activity.externalCacheDirs.filterNotNull()
+                    dirs.forEach { dir -> dir.listFiles()?.forEach { it.deleteRecursively() } }
+                    com.wmods.wppenhacer.xposed.utils.Utils.doRestart(activity)
+                }
             }
         } catch (t: Throwable) {
             Host.log(t)
