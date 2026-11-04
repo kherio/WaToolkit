@@ -74,6 +74,12 @@ class ToolsFragment : Fragment() {
             Tool("🩺", getString(R.string.compat_title), getString(R.string.compat_desc)) {
                 showCompatibility()
             },
+            Tool("🔄", getString(R.string.restart_whatsapp), getString(R.string.restart_whatsapp_desc)) {
+                open(ToolRequest.RESTART)
+            },
+            Tool("🧹", getString(R.string.clear_cache_restart), getString(R.string.clear_cache_restart_desc)) {
+                open(ToolRequest.CLEAR_CACHE)
+            },
             Tool("⬇", S.get(S.update_menu), S.get(S.tool_update_desc)) {
                 UpdateFlow(requireActivity()).start()
             }

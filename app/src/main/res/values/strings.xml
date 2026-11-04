@@ -634,4 +634,7 @@
     <string name="backup_now_started">Backup started in the background…</string>
     <string name="backup_now_running">A backup is already running: %1$s (for %2$d min). Check the compatibility report for progress.</string>
     <string name="backup_now_no_password">Set a backup password first.</string>
+    <string name="restart_whatsapp_desc">Closes WhatsApp and opens it again</string>
+    <string name="clear_cache_restart">Clear cache and restart</string>
+    <string name="clear_cache_restart_desc">Deletes WhatsApp\'s temporary files (not chats or media) and restarts it</string>
 </resources>
