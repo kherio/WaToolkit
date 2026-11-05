@@ -98,9 +98,6 @@ class SeparateGroup(loader: ClassLoader, preferences: SharedPreferences) :
 
         if (!xprefs.getBoolean("separategroups", false)) return
 
-        // Modifying tab list order
-        hookTabList()
-
         // Setting group icon
         hookTabIcon()
 
@@ -112,6 +109,11 @@ class SeparateGroup(loader: ClassLoader, preferences: SharedPreferences) :
 
         // Setting tab count
         hookTabCount()
+
+        // Modifying tab list order. It goes last on purpose: it is what adds the Groups tab, and if any of
+        // the hooks above fails to resolve (WhatsApp changed), the tab must not be added without the code that
+        // can build its page, because WhatsApp closes on start with "The item position should be less or equal to".
+        hookTabList()
     }
 
     override fun getPluginName(): String {
