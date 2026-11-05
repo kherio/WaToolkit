@@ -477,6 +477,13 @@ object Unobfuscator {
     @JvmStatic
     fun loadTabNameMethod(classLoader: ClassLoader): Method {
         return UnobfuscatorCache.getInstance().getMethod(classLoader) {
+            // 2.26.43+: the "updates" string is no longer the one used there, but the method that returns the
+            // tab title for an id keeps its error text (it is the sibling of the GetTab method).
+            findFirstMethodUsingStrings(
+                classLoader,
+                StringMatchType.Contains,
+                "No tab title override for tab id:"
+            )?.let { return@getMethod it }
             val id = UnobfuscatorCache.getInstance().getOfuscateIDString("updates")
             if (id < 1) throw Exception("TabName ID not found")
             val result = bridge.findMethod {
@@ -777,11 +784,10 @@ object Unobfuscator {
     @JvmStatic
     fun loadHomeConversationFragmentMethod(loader: ClassLoader): Method {
         return UnobfuscatorCache.getInstance().getMethod(loader) {
-            val homeClass = WppCore.homeActivityClass
             val convFragment =
                 findFirstClassUsingName(loader, StringMatchType.EndsWith, ".ConversationFragment")
             val method = bridge.findMethod {
-                searchInClass(Collections.singletonList(bridge.getClassData(homeClass)))
+                searchInClass(homeActivityClassDataChain())
                 matcher {
                     returnType(convFragment)
                 }
@@ -2518,22 +2524,37 @@ object Unobfuscator {
         }
     }
 
+    /**
+     * Data of HomeActivity and of its WhatsApp superclasses (com.whatsapp.home.*). In 2.26.43 part of its methods
+     * moved to a Kotlin base class (HomeActivityKt), so a lookup in HomeActivity alone misses them.
+     */
+    private fun homeActivityClassDataChain(): List<org.luckypray.dexkit.result.ClassData> {
+        val list = ArrayList<org.luckypray.dexkit.result.ClassData>()
+        var data = bridge.getClassData(WppCore.homeActivityClass)
+        while (data != null && data.name.startsWith("com.whatsapp.home.")) {
+            list.add(data)
+            data = data.superClass
+        }
+        return list
+    }
+
     @Throws(Exception::class)
     @JvmStatic
     fun loadAddOptionSearchBarMethod(classLoader: ClassLoader): Method {
         return UnobfuscatorCache.getInstance().getMethod(classLoader) {
-            val classData = bridge.getClassData(WppCore.homeActivityClass)
-                ?: return@getMethod null
-            val methodData = classData.findMethod {
-                matcher {
-                    addUsingNumber(Utils.getID("menuitem_search", "id"))
-                    addUsingNumber(200)
-                    paramCount(1)
-                    addParamType(Menu::class.java)
+            val searchId = Utils.getID("menuitem_search", "id")
+            for (classData in homeActivityClassDataChain()) {
+                val methodData = classData.findMethod {
+                    matcher {
+                        addUsingNumber(searchId)
+                        addUsingNumber(200)
+                        paramCount(1)
+                        addParamType(Menu::class.java)
+                    }
                 }
+                if (methodData.isNotEmpty()) return@getMethod methodData[0].getMethodInstance(classLoader)
             }
-            if (methodData.isEmpty()) throw NoSuchMethodError("MenuSearch not found in HomeActivity")
-            methodData[0].getMethodInstance(classLoader)
+            throw NoSuchMethodError("MenuSearch not found in HomeActivity")
         }
     }
 
