@@ -158,6 +158,10 @@ class MainActivity : BaseActivity() {
         if (nomedia.exists()) nomedia.delete()
     }
 
+    private companion object {
+        const val EXTRA_START_UPDATE = "start_update"
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleIncomingIntent(intent)
@@ -165,6 +169,11 @@ class MainActivity : BaseActivity() {
 
     private fun handleIncomingIntent(intent: Intent?) {
         intent ?: return
+
+        if (intent.getBooleanExtra(EXTRA_START_UPDATE, false)) {
+            intent.removeExtra(EXTRA_START_UPDATE)
+            com.wmods.wppenhacer.toolkit.update.UpdateFlow(this).start(autoDownload = true)
+        }
 
         val fragmentPosition = intent.getIntExtra("navigate_to_fragment", -1)
         val preferenceKey = intent.getStringExtra("scroll_to_preference")

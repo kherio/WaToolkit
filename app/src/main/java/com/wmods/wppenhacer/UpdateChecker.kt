@@ -1,6 +1,7 @@
 package com.wmods.wppenhacer
 
 import android.app.Activity
+import android.content.Intent
 import com.wmods.wppenhacer.xposed.core.WppCore
 import com.wmods.wppenhacer.xposed.core.components.AlertDialogWpp
 import com.wmods.wppenhacer.xposed.utils.Utils
@@ -97,12 +98,26 @@ class UpdateChecker(private val mActivity: Activity) : Runnable {
                 dialog.dismiss()
             }
             dialog.setPositiveButton("Update Now") { dialog, _ ->
-                Utils.openLink(mActivity, RELEASES_URL)
+                launchModuleUpdate()
                 dialog.dismiss()
             }
             dialog.show()
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    /** Opens the module app, which downloads and installs the release itself (no browser involved). */
+    private fun launchModuleUpdate() {
+        try {
+            val intent = mActivity.packageManager.getLaunchIntentForPackage(BuildConfig.APPLICATION_ID)
+                ?: throw IllegalStateException("Module launch intent not found")
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("start_update", true)
+            mActivity.startActivity(intent)
+        } catch (e: Exception) {
+            YukiLog.log(e)
+            Utils.openLink(mActivity, RELEASES_URL)
         }
     }
 

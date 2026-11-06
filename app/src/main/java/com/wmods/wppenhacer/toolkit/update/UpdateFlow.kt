@@ -20,7 +20,8 @@ class UpdateFlow(private val activity: Activity) {
 
     private val isBusiness = BuildConfig.APPLICATION_ID.endsWith(".w4b")
 
-    fun start() {
+    /** With [autoDownload] a newer release is downloaded and installed right away, without asking again. */
+    fun start(autoDownload: Boolean = false) {
         Host.toast(activity, S.get(S.update_checking))
         Thread {
             try {
@@ -28,7 +29,7 @@ class UpdateFlow(private val activity: Activity) {
                 activity.runOnUiThread {
                     if (rel == null || !Updater.isNewer(rel.version, BuildConfig.VERSION_NAME)) {
                         Host.toast(activity, S.get(S.update_none, BuildConfig.VERSION_NAME))
-                    } else offer(rel)
+                    } else if (autoDownload) download(rel) else offer(rel)
                 }
             } catch (e: Throwable) {
                 Host.log(e)
