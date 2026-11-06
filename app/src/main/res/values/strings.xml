@@ -638,4 +638,8 @@
     <string name="clear_cache_restart">Clear cache and restart</string>
     <string name="clear_cache_restart_desc">Deletes WhatsApp\'s temporary files (not chats or media) and restarts it</string>
     <string name="privacy_group_read">Read receipts and seen</string>
+    <string name="customization_group_appearance">Appearance</string>
+    <string name="general_group_messages">Messages and deleted</string>
+    <string name="general_group_chat">Chat and notices</string>
+    <string name="general_group_other">Limits, emojis and stickers</string>
 </resources>

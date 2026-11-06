@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+        <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/general_group_chat">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="showonline"
+            app:summary="@string/show_toast_on_contact_online_sum"
+            app:title="@string/show_toast_on_contact_online" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="toast_viewed_message"
+            app:summary="@string/toast_on_viewed_message_sum"
+            app:title="@string/toast_on_viewed_message" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="broadcast_tag"
+            app:summary="@string/show_chat_broadcast_icon_sum"
+            app:title="@string/show_chat_broadcast_icon" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="hidetag"
+            app:summary="@string/hidetag_sum"
+            app:title="@string/hidetag" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="removeseemore"
+            app:summary="@string/remove_see_more_button_"
+            app:title="@string/remove_see_more_button" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="disable_swipe_up_in_group"
+            app:summary="@string/disable_swipe_up_in_group_sum"
+            app:title="@string/disable_swipe_up_in_group" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="verify_blocked_contact"
+            app:summary="@string/show_contact_added_status_sum"
+            app:title="@string/show_contact_added_status" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="jump_first_message"
+            app:summary="@string/jump_first_message_sum"
+            app:title="@string/jump_first_message" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="copy_selection_message"
+            app:summary="@string/copy_selection_message_sum"
+            app:title="@string/copy_selection_message_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="stamp_copied_message"
+            app:summary="@string/stamp_copied_messages_sum"
+            app:title="@string/stamp_copied_messages" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:defaultValue="true"
+            app:key="doubletap2like"
+            app:summary="@string/double_click_to_like_sum"
+            app:title="@string/double_click_to_react" />
+
+        <com.wmods.wppenhacer.preference.LimitedEditTextPreference
+            app:defaultValue="👍"
+            app:dependency="doubletap2like"
+            app:key="doubletap2like_emoji"
+            app:maxLength="2"
+            app:summary="@string/custom_reaction_sum"
+            app:title="@string/custom_reaction" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="google_translate"
+            app:summary="@string/google_translate_sum"
+            app:title="@string/google_translate" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

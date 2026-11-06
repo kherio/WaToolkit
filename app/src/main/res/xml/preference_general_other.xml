@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+        <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/general_group_other">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="pinnedlimit"
+            app:summary="@string/disable_pinned_limit_sum"
+            app:title="@string/disable_pinned_limit" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="removeforwardlimit"
+            app:summary="@string/removeforwardlimit_sum"
+            app:title="@string/removeforwardlimit" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="capture_device"
+            app:summary="@string/capture_device_sum"
+            app:title="@string/capture_device_title" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="calltype"
+            app:summary="@string/selection_of_call_type_sum"
+            app:title="@string/selection_of_call_type" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="disable_defemojis"
+            app:summary="@string/disable_default_emojis_sum"
+            app:title="@string/disable_default_emojis" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="force_disable_emojis"
+            app:summary="@string/force_disable_emojis_sum"
+            app:title="@string/force_disable_emojis" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/stickers">
+
+        <rikka.material.preference.MaterialSwitchPreference
+        app:key="alertsticker"
+        app:summary="@string/enable_confirmation_to_send_sticker_sum"
+        app:title="@string/enable_confirmation_to_send_sticker" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+        app:key="remove_sticker_white_outline"
+        app:summary="@string/remove_sticker_white_outline_sum"
+        app:title="@string/remove_sticker_white_outline" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

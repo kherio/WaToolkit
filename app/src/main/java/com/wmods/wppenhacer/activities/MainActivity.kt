@@ -193,7 +193,7 @@ class MainActivity : BaseActivity() {
             } else {
                 scrollInChildFragment(fragment, preferenceKey)
             }
-        } else if (fragment is com.wmods.wppenhacer.ui.fragments.PrivacyFragment) {
+        } else if (fragment is com.wmods.wppenhacer.ui.fragments.base.SubScreensFragment) {
             fragment.openPreference(preferenceKey)
         } else if (fragment is BasePreferenceFragment) {
             fragment.scrollToPreference(preferenceKey)
@@ -208,7 +208,8 @@ class MainActivity : BaseActivity() {
         val subFragment = when (parentKey) {
             "general_home" -> GeneralFragment.HomeGeneralPreference()
             "homescreen" -> GeneralFragment.HomeScreenGeneralPreference()
-            "conversation" -> GeneralFragment.ConversationGeneralPreference()
+            "conversation" -> GeneralFragment.conversationScreenFor(resources, childPreferenceKey)
+                ?: GeneralFragment.ConversationGeneralPreference()
             else -> null
         } ?: return
 

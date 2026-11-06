@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/general">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="changecolor"
+            app:summary="@string/colors_customization_sum"
+            app:title="@string/colors_customization" />
+
+        <ListPreference
+            app:defaultValue="manual"
+            app:dependency="changecolor"
+            app:entries="@array/changecolor_mode_entries"
+            app:entryValues="@array/changecolor_mode_values"
+            app:key="changecolor_mode"
+            app:summary="%s"
+            app:title="@string/changecolor_mode" />
+
+        <com.wmods.wppenhacer.preference.FeatureColorPreferenceCompat
+            app:cpv_showAlphaSlider="true"
+            app:dependency="changecolor"
+            app:icon="@drawable/ic_customization_palette_24"
+            app:key="primary_color"
+            app:summary="@string/default_color"
+            app:title="@string/primary_color" />
+
+        <com.wmods.wppenhacer.preference.FeatureColorPreferenceCompat
+            app:cpv_showAlphaSlider="true"
+            app:dependency="changecolor"
+            app:icon="@drawable/ic_customization_palette_24"
+            app:key="background_color"
+            app:summary="@string/default_color"
+            app:title="@string/background_color" />
+
+        <com.wmods.wppenhacer.preference.FeatureColorPreferenceCompat
+            app:cpv_showAlphaSlider="true"
+            app:dependency="changecolor"
+            app:icon="@drawable/ic_customization_palette_24"
+            app:key="text_color"
+            app:summary="@string/default_color"
+            app:title="@string/text_color" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="wallpaper"
+            app:summary="@string/wallpaper_in_home_screen_sum"
+            app:title="@string/wallpaper_in_home_screen" />
+
+        <com.wmods.wppenhacer.preference.FileSelectPreference
+            android:entryValues="@array/image_picker"
+            android:summary="@string/wallpaper_not_selected"
+            app:dependency="wallpaper"
+            app:key="wallpaper_file"
+            app:title="@string/select_wallpaper" />
+
+        <SeekBarPreference
+            android:defaultValue="60"
+            android:max="100"
+            app:dependency="wallpaper"
+            app:key="wallpaper_alpha"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/wallpaper_transparency" />
+
+        <SeekBarPreference
+            android:defaultValue="75"
+            android:max="100"
+            app:dependency="wallpaper"
+            app:key="wallpaper_alpha_toolbar"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/toolbar_transparency" />
+
+        <SeekBarPreference
+            android:defaultValue="15"
+            android:max="100"
+            app:dependency="wallpaper"
+            app:key="wallpaper_alpha_navigation"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/navigation_transparency" />
+
+        <MultiSelectListPreference
+            app:entries="@array/tabshide_contents"
+            app:entryValues="@array/tabshide_values"
+            app:key="hidetabs"
+            app:summary="@string/hide_tabs_on_home_sum"
+            app:title="@string/hide_tabs_on_home" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            android:defaultValue="true"
+            android:summary="@string/custom_filters_sum"
+            app:key="custom_filters"
+            app:title="@string/custom_appearance" />
+
+        <EditTextPreference
+            android:summary="@string/filter_items_by_id_sum"
+            app:dependency="custom_filters"
+            app:key="filter_items"
+            app:title="@string/filter_items_by_id" />
+
+        <EditTextPreference
+            android:summary="@string/custom_theme_css_sum"
+            app:dependency="custom_filters"
+            app:key="css_theme"
+            app:title="@string/custom_theme_css" />
+
+        <EditTextPreference
+            android:summary="@string/change_default_dpi_sum"
+            app:defaultValue="0"
+            app:dependency="custom_filters"
+            app:key="change_dpi"
+            app:title="@string/change_default_dpi" />
+
+        <com.wmods.wppenhacer.preference.ThemePreference
+            android:key="folder_theme"
+            app:dependency="custom_filters"
+            android:summary="@string/manage_theme_sum"
+            android:title="@string/theme_manager" />
+
+        <ListPreference
+            android:entries="@array/animations_names"
+            app:defaultValue="default"
+            app:entryValues="@array/animations_values"
+            app:key="animation_list"
+            app:summary="@string/list_animations_home_screen_sum"
+            app:title="@string/list_animations_home_screen" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

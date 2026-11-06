@@ -12,91 +12,24 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.wmods.wppenhacer.toolkit.backup.ExternalCopy
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.content.res.XmlResourceParser
 import androidx.fragment.app.Fragment
-import org.xmlpull.v1.XmlPullParser
 import android.text.InputType
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import com.wmods.wppenhacer.R
 import com.wmods.wppenhacer.preference.ContactPickerPreference
-import com.wmods.wppenhacer.ui.fragments.base.BaseFragment
+import com.wmods.wppenhacer.ui.fragments.base.SubScreensFragment
 import com.wmods.wppenhacer.ui.fragments.base.BasePreferenceFragment
 
 /**
  * Privacy section. The root lists five subscreens (home screen, read receipts, conversations and statuses, calls,
  * local backup); the preferences of each one live in preference_privacy_*.xml.
  */
-class PrivacyFragment : BaseFragment() {
+class PrivacyFragment : SubScreensFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = super.onCreateView(inflater, container, savedInstanceState)
-        if (savedInstanceState == null) {
-            childFragmentManager.beginTransaction()
-                .add(R.id.frag_container, PrivacyRoot())
-                .commitNow()
-        }
-        val activityIntent = activity?.intent
-        val scrollToKey = activityIntent?.getStringExtra("scroll_to_preference")
-        if (scrollToKey != null) {
-            root?.postDelayed({ openPreference(scrollToKey) }, 300)
-            activityIntent.removeExtra("scroll_to_preference")
-        }
-        return root
-    }
-
-    /** Opens the subscreen that holds [key] (if it is not the visible one) and scrolls to it. */
-    fun openPreference(key: String) {
-        if (!isAdded) return
-        val target = SCREENS.firstOrNull { keysOf(it.xml).contains(key) }
-        val current = childFragmentManager.findFragmentById(R.id.frag_container)
-        if (target == null) {
-            (current as? BasePreferenceFragment)?.scrollToPreference(key)
-            return
-        }
-        if (current != null && current.javaClass == target.fragment) {
-            (current as? BasePreferenceFragment)?.scrollToPreference(key)
-            return
-        }
-        val next = target.fragment.getDeclaredConstructor().newInstance()
-        childFragmentManager.beginTransaction()
-            .replace(R.id.frag_container, next)
-            .addToBackStack(null)
-            .commitAllowingStateLoss()
-        view?.postDelayed({ (next as? BasePreferenceFragment)?.scrollToPreference(key) }, 400)
-    }
-
-    private fun keysOf(xml: Int): Set<String> {
-        val keys = HashSet<String>()
-        val parser: XmlResourceParser = resources.getXml(xml)
-        try {
-            while (parser.eventType != XmlPullParser.END_DOCUMENT) {
-                if (parser.eventType == XmlPullParser.START_TAG) {
-                    for (i in 0 until parser.attributeCount) {
-                        if (parser.getAttributeName(i) == "key") keys.add(parser.getAttributeValue(i))
-                    }
-                }
-                parser.next()
-            }
-        } finally {
-            parser.close()
-        }
-        return keys
-    }
-
-    @Suppress("DEPRECATION")
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        childFragmentManager.fragments.forEach { it.onActivityResult(requestCode, resultCode, data) }
-    }
+    override fun createRoot(): Fragment = PrivacyRoot()
+    override val screens get() = SCREENS
 
     class PrivacyRoot : BasePreferenceFragment() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -257,16 +190,14 @@ class PrivacyFragment : BaseFragment() {
 
     }
 
-    private class Screen(val xml: Int, val fragment: Class<out Fragment>)
-
     private companion object {
         private const val EXTERNAL_DIR_KEY = "auto_backup_external_dir"
         private val SCREENS = listOf(
-            Screen(R.xml.preference_privacy_home, PrivacyHome::class.java),
-            Screen(R.xml.preference_privacy_read, PrivacyRead::class.java),
-            Screen(R.xml.preference_privacy_conversation, PrivacyConversation::class.java),
-            Screen(R.xml.preference_privacy_calls, PrivacyCalls::class.java),
-            Screen(R.xml.preference_privacy_backup, PrivacyBackup::class.java)
+            SubScreensFragment.Screen(R.xml.preference_privacy_home, PrivacyHome::class.java),
+            SubScreensFragment.Screen(R.xml.preference_privacy_read, PrivacyRead::class.java),
+            SubScreensFragment.Screen(R.xml.preference_privacy_conversation, PrivacyConversation::class.java),
+            SubScreensFragment.Screen(R.xml.preference_privacy_calls, PrivacyCalls::class.java),
+            SubScreensFragment.Screen(R.xml.preference_privacy_backup, PrivacyBackup::class.java)
         )
     }
 }

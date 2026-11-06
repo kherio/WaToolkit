@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+        <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/general_group_messages">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="toastdeleted"
+            app:summary="@string/toast_on_delete_sum"
+            app:title="@string/toast_on_delete" />
+
+        <ListPreference
+            app:entries="@array/antirevoke_entries"
+            app:entryValues="@array/antirevoke_values"
+            app:iconSpaceReserved="false"
+            app:key="antirevoke"
+            app:summary="@string/antirevoke_sum"
+            app:title="@string/antirevoke" />
+
+        <ListPreference
+            app:entries="@array/antirevoke_entries"
+            app:entryValues="@array/antirevoke_values"
+            app:iconSpaceReserved="false"
+            app:key="antirevokestatus"
+            app:summary="@string/antirevokestatus_sum"
+            app:title="@string/antirevokestatus" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="antidisappearing"
+            app:summary="@string/antidisappearing_sum"
+            app:title="@string/antidisappearing" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="antieditmessages"
+            app:summary="@string/show_edited_message_history_sum"
+            app:title="@string/show_edited_message_history" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="revokeallmessages"
+            app:summary="@string/delete_for_everyone_all_messages_sum"
+            app:title="@string/delete_for_everyone_all_messages" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

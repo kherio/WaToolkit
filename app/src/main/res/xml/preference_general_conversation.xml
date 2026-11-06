@@ -1,165 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory
+        <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.GeneralFragment$MessagesGeneralPreference"
         app:iconSpaceReserved="false"
-        app:title="@string/conversation">
+        app:key="general_screen_messages"
+        app:title="@string/general_group_messages" />
 
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="showonline"
-            app:summary="@string/show_toast_on_contact_online_sum"
-            app:title="@string/show_toast_on_contact_online" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="toastdeleted"
-            app:summary="@string/toast_on_delete_sum"
-            app:title="@string/toast_on_delete" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="toast_viewed_message"
-            app:summary="@string/toast_on_viewed_message_sum"
-            app:title="@string/toast_on_viewed_message" />
-
-        <ListPreference
-            app:entries="@array/antirevoke_entries"
-            app:entryValues="@array/antirevoke_values"
-            app:iconSpaceReserved="false"
-            app:key="antirevoke"
-            app:summary="@string/antirevoke_sum"
-            app:title="@string/antirevoke" />
-
-        <ListPreference
-            app:entries="@array/antirevoke_entries"
-            app:entryValues="@array/antirevoke_values"
-            app:iconSpaceReserved="false"
-            app:key="antirevokestatus"
-            app:summary="@string/antirevokestatus_sum"
-            app:title="@string/antirevokestatus" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="antidisappearing"
-            app:summary="@string/antidisappearing_sum"
-            app:title="@string/antidisappearing" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="broadcast_tag"
-            app:summary="@string/show_chat_broadcast_icon_sum"
-            app:title="@string/show_chat_broadcast_icon" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="pinnedlimit"
-            app:summary="@string/disable_pinned_limit_sum"
-            app:title="@string/disable_pinned_limit" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="removeforwardlimit"
-            app:summary="@string/removeforwardlimit_sum"
-            app:title="@string/removeforwardlimit" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hidetag"
-            app:summary="@string/hidetag_sum"
-            app:title="@string/hidetag" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="revokeallmessages"
-            app:summary="@string/delete_for_everyone_all_messages_sum"
-            app:title="@string/delete_for_everyone_all_messages" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="removeseemore"
-            app:summary="@string/remove_see_more_button_"
-            app:title="@string/remove_see_more_button" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="disable_swipe_up_in_group"
-            app:summary="@string/disable_swipe_up_in_group_sum"
-            app:title="@string/disable_swipe_up_in_group" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="antieditmessages"
-            app:summary="@string/show_edited_message_history_sum"
-            app:title="@string/show_edited_message_history" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="capture_device"
-            app:summary="@string/capture_device_sum"
-            app:title="@string/capture_device_title" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="calltype"
-            app:summary="@string/selection_of_call_type_sum"
-            app:title="@string/selection_of_call_type" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="disable_defemojis"
-            app:summary="@string/disable_default_emojis_sum"
-            app:title="@string/disable_default_emojis" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="force_disable_emojis"
-            app:summary="@string/force_disable_emojis_sum"
-            app:title="@string/force_disable_emojis" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="stamp_copied_message"
-            app:summary="@string/stamp_copied_messages_sum"
-            app:title="@string/stamp_copied_messages" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:defaultValue="true"
-            app:key="doubletap2like"
-            app:summary="@string/double_click_to_like_sum"
-            app:title="@string/double_click_to_react" />
-
-        <com.wmods.wppenhacer.preference.LimitedEditTextPreference
-            app:defaultValue="👍"
-            app:dependency="doubletap2like"
-            app:key="doubletap2like_emoji"
-            app:maxLength="2"
-            app:summary="@string/custom_reaction_sum"
-            app:title="@string/custom_reaction" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="google_translate"
-            app:summary="@string/google_translate_sum"
-            app:title="@string/google_translate" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="verify_blocked_contact"
-            app:summary="@string/show_contact_added_status_sum"
-            app:title="@string/show_contact_added_status" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="jump_first_message"
-            app:summary="@string/jump_first_message_sum"
-            app:title="@string/jump_first_message" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="copy_selection_message"
-            app:summary="@string/copy_selection_message_sum"
-            app:title="@string/copy_selection_message_title" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
+    <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.GeneralFragment$ChatGeneralPreference"
         app:iconSpaceReserved="false"
-        app:title="@string/stickers">
+        app:key="general_screen_chat"
+        app:title="@string/general_group_chat" />
 
-    <rikka.material.preference.MaterialSwitchPreference
-        app:key="alertsticker"
-        app:summary="@string/enable_confirmation_to_send_sticker_sum"
-        app:title="@string/enable_confirmation_to_send_sticker" />
-
-    <rikka.material.preference.MaterialSwitchPreference
-        app:key="remove_sticker_white_outline"
-        app:summary="@string/remove_sticker_white_outline_sum"
-        app:title="@string/remove_sticker_white_outline" />
-
-    </PreferenceCategory>
-
-    <rikka.material.preference.MaterialSwitchPreference
-        app:key="disable_document_scanner"
-        app:summary="@string/disable_document_scanner_sum"
-        app:title="@string/disable_document_scanner" />
+    <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.GeneralFragment$OtherGeneralPreference"
+        app:iconSpaceReserved="false"
+        app:key="general_screen_other"
+        app:title="@string/general_group_other" />
 
 </PreferenceScreen>

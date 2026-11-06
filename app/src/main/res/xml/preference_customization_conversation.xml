@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/conversation">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="admin_grp"
+            app:summary="@string/show_admin_group_icon_sum"
+            app:title="@string/show_admin_group_icon" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            android:summary="@string/new_context_menu_ui_sum"
+            app:key="floatingmenu"
+            app:title="@string/new_context_menu_ui" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            android:defaultValue="true"
+            app:key="animation_emojis"
+            app:summary="@string/animation_emojis_sum"
+            app:title="@string/animation_emojis" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="bubble_color"
+            app:summary="@string/change_blubble_color_sum"
+            app:title="@string/change_bubble_colors" />
+
+        <com.wmods.wppenhacer.preference.FeatureColorPreferenceCompat
+            app:cpv_showAlphaSlider="true"
+            app:dependency="bubble_color"
+            app:icon="@drawable/ic_customization_palette_24"
+            app:key="bubble_left"
+            app:summary="@string/default_color"
+            app:title="@string/bubble_left" />
+
+        <com.wmods.wppenhacer.preference.FeatureColorPreferenceCompat
+            app:cpv_showAlphaSlider="true"
+            app:dependency="bubble_color"
+            app:icon="@drawable/ic_customization_palette_24"
+            app:key="bubble_right"
+            app:summary="@string/default_color"
+            app:title="@string/bubble_right" />
+    </PreferenceCategory>
+</PreferenceScreen>
