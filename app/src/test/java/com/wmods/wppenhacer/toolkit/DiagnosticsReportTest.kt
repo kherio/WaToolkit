@@ -38,4 +38,19 @@ class DiagnosticsReportTest {
         assertTrue(s.text.contains("- Channels: boom"))
         assertTrue(s.text.contains("- loadHeader [Channels]: not found"))
     }
+
+    @Test
+    fun problemsListEachAffectedFeatureOnceWithTheReportVersion() {
+        val s = DiagnosticsReport.format(
+            base()
+                .put("features", JSONArray()
+                    .put(JSONObject().put("name", "Channels").put("ms", 1).put("error", "boom"))
+                    .put(JSONObject().put("name", "Others").put("ms", 1).put("error", JSONObject.NULL)))
+                .put("failures", JSONArray()
+                    .put(JSONObject().put("key", "a").put("feature", "Channels").put("error", "x").put("count", 1))
+                    .put(JSONObject().put("key", "b").put("feature", "SeparateGroup").put("error", "y").put("count", 1)))
+        )
+        assertEquals("2.26.41.11", s.whatsapp)
+        assertEquals(listOf("Channels", "SeparateGroup"), s.problems)
+    }
 }

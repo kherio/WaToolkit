@@ -642,4 +642,5 @@
     <string name="general_group_messages">Messages and deleted</string>
     <string name="general_group_chat">Chat and notices</string>
     <string name="general_group_other">Limits, emojis and stickers</string>
+    <string name="compat_alert">%1$d features have problems on this WhatsApp version: %2$s. Tap for details</string>
 </resources>

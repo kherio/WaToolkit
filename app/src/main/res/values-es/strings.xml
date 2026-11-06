@@ -587,4 +587,5 @@
     <string name="general_group_messages">Mensajes y borrados</string>
     <string name="general_group_chat">Chat y avisos</string>
     <string name="general_group_other">Límites, emojis y stickers</string>
+    <string name="compat_alert">%1$d funciones tienen problemas en esta versión de WhatsApp: %2$s. Toca para ver el detalle</string>
 </resources>

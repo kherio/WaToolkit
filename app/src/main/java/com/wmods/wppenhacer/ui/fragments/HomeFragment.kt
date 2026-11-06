@@ -201,6 +201,27 @@ class HomeFragment : BaseFragment() {
         super.onResume()
         setDisplayHomeAsUpEnabled(false)
         updatePackageStatuses(requireContext())
+        showCompatAlert(requireContext())
+    }
+
+    /**
+     * If WhatsApp's last report (same version as the installed one) lists features that do not work, say so on the
+     * WhatsApp status strip; tapping it opens the full report.
+     */
+    private fun showCompatAlert(context: Context) {
+        val report = com.wmods.wppenhacer.toolkit.DiagnosticsReport.load(context) ?: return
+        val installed = try {
+            context.packageManager.getPackageInfo(FeatureLoader.PACKAGE_WPP, 0).versionName
+        } catch (_: Exception) {
+            null
+        }
+        if (report.problems.isEmpty() || report.whatsapp != installed) return
+        binding.statusSummary1.text = getString(
+            R.string.compat_alert, report.problems.size, report.problems.take(3).joinToString(", ")
+        )
+        binding.statusSummary1.visibility = View.VISIBLE
+        binding.status2.getChildAt(0).setBackgroundResource(R.drawable.bg_status_warn)
+        binding.status2.setOnClickListener { com.wmods.wppenhacer.ui.CompatDialog.show(requireContext()) }
     }
 
     private fun receiverBroadcastWpp(context: Context, intent: Intent) {
@@ -219,6 +240,7 @@ class HomeFragment : BaseFragment() {
         binding.rebootBtn.visibility = View.VISIBLE
         binding.statusSummary1.visibility = View.VISIBLE
         binding.statusIcon2.setImageResource(R.drawable.ic_round_check_circle_24)
+        showCompatAlert(context)
     }
 
     private fun resetConfigs(context: Context) {

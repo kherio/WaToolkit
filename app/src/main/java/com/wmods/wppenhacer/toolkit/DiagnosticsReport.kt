@@ -12,7 +12,16 @@ import java.util.Date
  */
 object DiagnosticsReport {
 
-    class Summary(val text: String, val failedFeatures: Int, val failedFinders: Int, val supported: Boolean)
+    class Summary(
+        val text: String,
+        val failedFeatures: Int,
+        val failedFinders: Int,
+        val supported: Boolean,
+        /** WhatsApp version the report was made on. */
+        val whatsapp: String = "",
+        /** Features that failed to load or lost a finder, by name. */
+        val problems: List<String> = emptyList()
+    )
 
     fun file(context: Context) = File(context.filesDir, "diagnostics.json")
 
@@ -75,6 +84,7 @@ object DiagnosticsReport {
                 }
             }
         }.trimEnd()
-        return Summary(text, failedFeatures.size, failedFinders.size, supported)
+        val problems = (failedFeatures.map { it.getString("name") } + affected).distinct()
+        return Summary(text, failedFeatures.size, failedFinders.size, supported, json.optString("whatsapp"), problems)
     }
 }
