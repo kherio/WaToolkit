@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/auto_backup_category">
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="auto_backup"
+            app:summary="@string/auto_backup_sum"
+            app:title="@string/auto_backup" />
+
+        <EditTextPreference
+            android:dependency="auto_backup"
+            app:key="auto_backup_password"
+            app:summary="@string/auto_backup_password_sum"
+            app:title="@string/auto_backup_password" />
+
+        <ListPreference
+            android:dependency="auto_backup"
+            app:defaultValue="24"
+            app:entries="@array/auto_backup_interval_entries"
+            app:entryValues="@array/auto_backup_interval_values"
+            app:key="auto_backup_interval"
+            app:title="@string/auto_backup_interval"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="-1"
+            android:dependency="auto_backup"
+            app:entries="@array/auto_backup_hour_entries"
+            app:entryValues="@array/auto_backup_hour_values"
+            app:key="auto_backup_hour"
+            app:title="@string/auto_backup_hour"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            android:dependency="auto_backup"
+            app:defaultValue="3"
+            app:entries="@array/auto_backup_keep_values"
+            app:entryValues="@array/auto_backup_keep_values"
+            app:key="auto_backup_keep"
+            app:summary="@string/auto_backup_keep_sum"
+            app:title="@string/auto_backup_keep" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            android:dependency="auto_backup"
+            app:key="auto_backup_media"
+            app:summary="@string/auto_backup_media_sum"
+            app:title="@string/auto_backup_media" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:defaultValue="true"
+            app:key="auto_backup_notify"
+            app:summary="@string/auto_backup_notify_sum"
+            app:title="@string/auto_backup_notify" />
+
+        <Preference
+            android:dependency="auto_backup"
+            app:key="auto_backup_external_dir"
+            app:summary="@string/auto_backup_external_sum"
+            app:title="@string/auto_backup_external" />
+
+        <Preference
+            app:key="auto_backup_now"
+            app:summary="@string/backup_now_sum"
+            app:title="@string/backup_now" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

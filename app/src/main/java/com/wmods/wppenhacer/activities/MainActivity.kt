@@ -193,6 +193,8 @@ class MainActivity : BaseActivity() {
             } else {
                 scrollInChildFragment(fragment, preferenceKey)
             }
+        } else if (fragment is com.wmods.wppenhacer.ui.fragments.PrivacyFragment) {
+            fragment.openPreference(preferenceKey)
         } else if (fragment is BasePreferenceFragment) {
             fragment.scrollToPreference(preferenceKey)
         }

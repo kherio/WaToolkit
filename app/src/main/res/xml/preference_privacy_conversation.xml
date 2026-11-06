@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/conversation">
+
+        <ListPreference
+            app:defaultValue="0"
+            app:entries="@array/custom_privacy_entries"
+            app:entryValues="@array/custom_privacy_values"
+            app:key="custom_privacy_type"
+            app:summary="@string/custom_privacy_per_contact_sum"
+            app:title="@string/custom_privacy_per_contact" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="strip_metadata"
+            app:summary="@string/strip_metadata_sum"
+            app:title="@string/strip_metadata" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="secure_chats"
+            app:summary="@string/secure_chats_sum"
+            app:title="@string/secure_chats" />
+
+    </PreferenceCategory>
+
+<PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/status">
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="hidestatusview"
+            app:summary="@string/hidestatusview_sum"
+            app:title="@string/hidestatusview" />
+    </PreferenceCategory>
+</PreferenceScreen>
