@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/home_screen">
+
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="menuwicon"
+            app:summary="@string/menuwicon_sum"
+            app:title="@string/menuwicon" />
+
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:key="floating_bottom_bar"
+            app:summary="@string/floating_bottom_bar_sum"
+            app:title="@string/floating_bottom_bar" />
+
+        <SeekBarPreference
+            android:defaultValue="24"
+            android:max="64"
+            app:dependency="floating_bottom_bar"
+            app:key="floating_bottom_bar_radius"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:title="@string/floating_bottom_bar_radius" />
+
+
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/configui_entries"
+            android:entryValues="@array/configui_values"
+            app:key="configui_mode"
+            app:summary="@string/configui_sum"
+            app:title="@string/configui" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

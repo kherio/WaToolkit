@@ -68,4 +68,44 @@ class GeneralFragment : BaseFragment() {
             setDisplayHomeAsUpEnabled(true)
         }
     }
+
+    // The "Conversation" row opens a list of three subscreens (ConversationGeneralPreference above).
+    class MessagesGeneralPreference : ConversationSubScreen(R.xml.preference_general_messages)
+    class ChatGeneralPreference : ConversationSubScreen(R.xml.preference_general_chat)
+    class OtherGeneralPreference : ConversationSubScreen(R.xml.preference_general_other)
+
+    abstract class ConversationSubScreen(private val xml: Int) : BasePreferenceFragment() {
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            super.onCreatePreferences(savedInstanceState, rootKey)
+            setPreferencesFromResource(xml, rootKey)
+            setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
+    companion object {
+        /** Subscreen of "Conversation" that holds [key], or null. Used by search to open the right one. */
+        fun conversationScreenFor(resources: android.content.res.Resources, key: String): BasePreferenceFragment? {
+            val screens = listOf(
+                R.xml.preference_general_messages to MessagesGeneralPreference(),
+                R.xml.preference_general_chat to ChatGeneralPreference(),
+                R.xml.preference_general_other to OtherGeneralPreference()
+            )
+            for ((xml, fragment) in screens) {
+                val parser = resources.getXml(xml)
+                try {
+                    while (parser.eventType != org.xmlpull.v1.XmlPullParser.END_DOCUMENT) {
+                        if (parser.eventType == org.xmlpull.v1.XmlPullParser.START_TAG) {
+                            for (i in 0 until parser.attributeCount) {
+                                if (parser.getAttributeName(i) == "key" && parser.getAttributeValue(i) == key) return fragment
+                            }
+                        }
+                        parser.next()
+                    }
+                } finally {
+                    parser.close()
+                }
+            }
+            return null
+        }
+    }
 }

@@ -583,4 +583,8 @@
     <string name="clear_cache_restart">Borrar caché y reiniciar</string>
     <string name="clear_cache_restart_desc">Borra los archivos temporales de WhatsApp (no los chats ni la multimedia) y lo reinicia</string>
     <string name="privacy_group_read">Visto y leído</string>
+    <string name="customization_group_appearance">Aspecto</string>
+    <string name="general_group_messages">Mensajes y borrados</string>
+    <string name="general_group_chat">Chat y avisos</string>
+    <string name="general_group_other">Límites, emojis y stickers</string>
 </resources>
