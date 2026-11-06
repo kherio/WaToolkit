@@ -2,242 +2,34 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory app:title="@string/home_screen">
-
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/archive_entries"
-            android:entryValues="@array/archive_values"
-            app:key="typearchive"
-            app:summary="@string/hide_archived_chat_sum"
-            app:title="@string/hide_archived_chat" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:defaultValue="true"
-            app:key="show_freezeLastSeen"
-            app:summary="@string/show_freezeLastSeen_sum"
-            app:title="@string/show_freezeLastSeen_button" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:defaultValue="true"
-            app:key="ghostmode"
-            app:summary="@string/ghost_mode_sum"
-            app:title="@string/ghost_mode_title" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="always_online"
-            app:summary="@string/always_online_sum"
-            app:title="@string/always_online" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="lockedchats_enhancer"
-            app:summary="@string/lockedchats_enhancer_sum"
-            app:title="@string/lockedchats_enhancer" />
-
-    </PreferenceCategory>
-
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/conversation">
-
-        <ListPreference
-            app:defaultValue="0"
-            app:entries="@array/custom_privacy_entries"
-            app:entryValues="@array/custom_privacy_values"
-            app:key="custom_privacy_type"
-            app:summary="@string/custom_privacy_per_contact_sum"
-            app:title="@string/custom_privacy_per_contact" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="strip_metadata"
-            app:summary="@string/strip_metadata_sum"
-            app:title="@string/strip_metadata" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="secure_chats"
-            app:summary="@string/secure_chats_sum"
-            app:title="@string/secure_chats" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="freezelastseen"
-            app:summary="@string/freezelastseen_sum"
-            app:title="@string/freezelastseen" />
-
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hideread"
-            app:summary="@string/hideread_sum"
-            app:title="@string/hideread" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hide_seen_view"
-            app:dependency="hideread"
-            app:summary="@string/view_seen_tick_sum"
-            app:title="@string/view_seen_tick" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="blueonreply"
-            app:summary="@string/blueonreply_sum"
-            app:title="@string/blueonreply" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hideread_group"
-            app:summary="@string/hideread_group_sum"
-            app:title="@string/hideread_group" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hidereceipt"
-            app:summary="@string/hidereceipt_sum"
-            app:title="@string/hidereceipt" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="ghostmode_t"
-            app:summary="@string/ghostmode_sum"
-            app:title="@string/ghostmode" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="ghostmode_r"
-            app:summary="@string/ghostmode_sum_r"
-            app:title="@string/ghostmode_r" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hideonceseen"
-            app:summary="@string/hide_once_view_seen_sum"
-            app:title="@string/hide_once_view_seen" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hideaudioseen"
-            app:summary="@string/hide_audio_seen_sum"
-            app:title="@string/hide_audio_seen" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="viewonce"
-            app:summary="@string/viewonce_sum"
-            app:title="@string/viewonce" />
-
-        <ListPreference
-            app:entries="@array/seentick_buttons"
-            app:entryValues="@array/seentick_values"
-            app:key="seentick"
-            app:summary="@string/show_button_to_send_blue_tick_sum"
-            app:title="@string/show_button_to_send_blue_tick" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/status">
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="hidestatusview"
-            app:summary="@string/hidestatusview_sum"
-            app:title="@string/hidestatusview" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/calls">
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="call_info"
-            app:summary="@string/additional_call_information_sum"
-            app:title="@string/additional_call_information" />
-
-        <ListPreference
-            app:entries="@array/call_blocker_buttons"
-            app:entryValues="@array/call_blocker_values"
-            app:key="call_privacy"
-            app:summary="@string/call_blocker_sum"
-            app:title="@string/call_blocker" />
-
-        <ListPreference
-            app:entries="@array/call_type_buttons"
-            app:entryValues="@array/call_type_values"
-            app:key="call_type"
-            app:summary="@string/call_blocking_type_sum"
-            app:title="@string/call_blocking_type" />
-
-        <com.wmods.wppenhacer.preference.ContactPickerPreference
-            android:key="call_block_contacts"
-            android:title="@string/contact_block_list"
-            app:summaryOff="@string/no_contacts_selected"
-            app:summaryOn="@string/contact_were_selected" />
-
-        <com.wmods.wppenhacer.preference.ContactPickerPreference
-            android:key="call_white_contacts"
-            android:title="@string/contact_white_list"
-            app:summaryOff="@string/no_contacts_selected"
-            app:summaryOn="@string/contact_were_selected" />
-
-    </PreferenceCategory>
-
-
-
-    <PreferenceCategory
-        app:iconSpaceReserved="false"
-        app:title="@string/auto_backup_category">
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:key="auto_backup"
-            app:summary="@string/auto_backup_sum"
-            app:title="@string/auto_backup" />
-
-        <EditTextPreference
-            android:dependency="auto_backup"
-            app:key="auto_backup_password"
-            app:summary="@string/auto_backup_password_sum"
-            app:title="@string/auto_backup_password" />
-
-        <ListPreference
-            android:dependency="auto_backup"
-            app:defaultValue="24"
-            app:entries="@array/auto_backup_interval_entries"
-            app:entryValues="@array/auto_backup_interval_values"
-            app:key="auto_backup_interval"
-            app:title="@string/auto_backup_interval"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:defaultValue="-1"
-            android:dependency="auto_backup"
-            app:entries="@array/auto_backup_hour_entries"
-            app:entryValues="@array/auto_backup_hour_values"
-            app:key="auto_backup_hour"
-            app:title="@string/auto_backup_hour"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            android:dependency="auto_backup"
-            app:defaultValue="3"
-            app:entries="@array/auto_backup_keep_values"
-            app:entryValues="@array/auto_backup_keep_values"
-            app:key="auto_backup_keep"
-            app:summary="@string/auto_backup_keep_sum"
-            app:title="@string/auto_backup_keep" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            android:dependency="auto_backup"
-            app:key="auto_backup_media"
-            app:summary="@string/auto_backup_media_sum"
-            app:title="@string/auto_backup_media" />
-
-        <rikka.material.preference.MaterialSwitchPreference
-            app:defaultValue="true"
-            app:key="auto_backup_notify"
-            app:summary="@string/auto_backup_notify_sum"
-            app:title="@string/auto_backup_notify" />
-
         <Preference
-            android:dependency="auto_backup"
-            app:key="auto_backup_external_dir"
-            app:summary="@string/auto_backup_external_sum"
-            app:title="@string/auto_backup_external" />
+        app:fragment="com.wmods.wppenhacer.ui.fragments.PrivacyFragment$PrivacyHome"
+        app:iconSpaceReserved="false"
+        app:key="privacy_screen_privacyhome"
+        app:title="@string/home_screen" />
 
-        <Preference
-            app:key="auto_backup_now"
-            app:summary="@string/backup_now_sum"
-            app:title="@string/backup_now" />
+    <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.PrivacyFragment$PrivacyRead"
+        app:iconSpaceReserved="false"
+        app:key="privacy_screen_privacyread"
+        app:title="@string/privacy_group_read" />
 
-    </PreferenceCategory>
+    <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.PrivacyFragment$PrivacyConversation"
+        app:iconSpaceReserved="false"
+        app:key="privacy_screen_privacyconversation"
+        app:title="@string/conversation" />
+
+    <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.PrivacyFragment$PrivacyCalls"
+        app:iconSpaceReserved="false"
+        app:key="privacy_screen_privacycalls"
+        app:title="@string/calls" />
+
+    <Preference
+        app:fragment="com.wmods.wppenhacer.ui.fragments.PrivacyFragment$PrivacyBackup"
+        app:iconSpaceReserved="false"
+        app:key="privacy_screen_privacybackup"
+        app:title="@string/auto_backup_category" />
 
 </PreferenceScreen>

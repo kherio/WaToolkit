@@ -637,4 +637,5 @@
     <string name="restart_whatsapp_desc">Closes WhatsApp and opens it again</string>
     <string name="clear_cache_restart">Clear cache and restart</string>
     <string name="clear_cache_restart_desc">Deletes WhatsApp\'s temporary files (not chats or media) and restarts it</string>
+    <string name="privacy_group_read">Read receipts and seen</string>
 </resources>

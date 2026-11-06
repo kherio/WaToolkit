@@ -582,4 +582,5 @@
     <string name="restart_whatsapp_desc">Cierra WhatsApp y lo vuelve a abrir</string>
     <string name="clear_cache_restart">Borrar caché y reiniciar</string>
     <string name="clear_cache_restart_desc">Borra los archivos temporales de WhatsApp (no los chats ni la multimedia) y lo reinicia</string>
+    <string name="privacy_group_read">Visto y leído</string>
 </resources>
