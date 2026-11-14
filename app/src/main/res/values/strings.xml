@@ -643,4 +643,6 @@
     <string name="general_group_chat">Chat and notices</string>
     <string name="general_group_other">Limits, emojis and stickers</string>
     <string name="compat_alert">%1$d features have problems on this WhatsApp version: %2$s. Tap for details</string>
+    <string name="video_no_limit">Remove video size limit</string>
+    <string name="video_no_limit_sum">Send HD videos of any size (up to WhatsApp\'s 2 GB ceiling) without recompressing them to fit under the limit</string>
 </resources>

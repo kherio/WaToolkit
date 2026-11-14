@@ -54,6 +54,12 @@
 
         <rikka.material.preference.MaterialSwitchPreference
             app:dependency="videoquality"
+            app:key="video_no_limit"
+            app:summary="@string/video_no_limit_sum"
+            app:title="@string/video_no_limit" />
+
+        <rikka.material.preference.MaterialSwitchPreference
+            app:dependency="videoquality"
             app:key="video_real_resolution"
             app:summary="@string/send_video_in_real_resolution_sum"
             app:title="@string/send_video_in_real_resolution" />

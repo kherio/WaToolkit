@@ -17,12 +17,16 @@ class MediaQuality(loader: ClassLoader, preferences: SharedPreferences) :
     companion object {
         const val EDGE_WIDTH = 1920
         const val BITRATE = 10_000
+
+        /** WhatsApp's own hard ceiling for any upload is 2 GB. */
+        const val NO_LIMIT_MB = 2000
     }
 
     override fun doHook() {
         val videoQuality = xprefs.getBoolean("videoquality", false)
         val imageQuality = xprefs.getBoolean("imagequality", false)
-        val maxSize = kotlin.math.max(xprefs.getFloat("video_limit_size", 60f).toInt(), 90)
+        val maxSize = if (xprefs.getBoolean("video_no_limit", false)) NO_LIMIT_MB
+        else kotlin.math.max(xprefs.getFloat("video_limit_size", 60f).toInt(), 90)
 
         // Disable manual calculation ProcessMediaQuality
         Others.propsBoolean[14447] = false
