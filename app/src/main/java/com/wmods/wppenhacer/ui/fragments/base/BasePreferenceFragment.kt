@@ -239,10 +239,12 @@ abstract class BasePreferenceFragment : PreferenceFragmentCompat(),
             App.setThemeMode(prefs.getString("thememode", "0")!!.toInt())
         }
 
-        val colorMode = prefs.getString("wae_color_mode", "preset")
-        val useMonet =
-            Objects.equals(colorMode, "monet") && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-        setPreferenceState("wae_color_preset", !useMonet)
+        // The preset list stays tappable in Monet mode (a disabled row did nothing when tapped):
+        // choosing a preset switches the mode back to "preset".
+        if (key == "wae_color_preset" && prefs.getString("wae_color_mode", "preset") == "monet") {
+            findPreference<androidx.preference.ListPreference>("wae_color_mode")?.value = "preset"
+            return
+        }
 
         if (key == "wae_color_mode" || key == "wae_color_preset") {
             activity?.recreate()
