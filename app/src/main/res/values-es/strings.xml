@@ -588,4 +588,6 @@
     <string name="general_group_chat">Chat y avisos</string>
     <string name="general_group_other">Límites, emojis y stickers</string>
     <string name="compat_alert">%1$d funciones tienen problemas en esta versión de WhatsApp: %2$s. Toca para ver el detalle</string>
+    <string name="video_no_limit">Quitar el límite de tamaño de vídeo</string>
+    <string name="video_no_limit_sum">Enviar vídeos HD de cualquier tamaño (hasta el máximo de 2 GB de WhatsApp) sin recomprimirlos para que quepan en el límite</string>
 </resources>

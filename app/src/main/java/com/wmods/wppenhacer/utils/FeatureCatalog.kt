@@ -770,6 +770,10 @@ object FeatureCatalog {
             category, fragment, null, "video", "quality", "hd"
         )
         add(
+            catalog, context, "video_no_limit", R.string.video_no_limit, R.string.video_no_limit_sum,
+            category, fragment, null, "video", "size", "limit", "unlimited", "hd"
+        )
+        add(
             catalog,
             context,
             "video_real_resolution",
