@@ -594,4 +594,12 @@
     <string name="wa_update_known">WhatsApp se ha actualizado a la %s, que aún no está en la lista de compatibles. WaToolkit se carga igualmente pero algunas funciones pueden fallar; abre el módulo para comprobar la compatibilidad.</string>
     <string name="wa_update_unknown">WhatsApp se ha actualizado a la %s, una rama que WaToolkit no ha probado. Puede que haya funciones que no vayan; espera a una actualización del módulo.</string>
     <string name="wa_update_channel">Actualizaciones de WhatsApp</string>
+    <string name="tool_search">Buscar en todos los chats</string>
+    <string name="tool_search_desc">Encuentra texto, enlaces, fotos, vídeos, audios o documentos por persona, grupo y fecha</string>
+    <string name="tool_storage">Liberar almacenamiento</string>
+    <string name="tool_storage_desc">Mira cuánto ocupa cada chat y borra su multimedia por tipo y antigüedad</string>
+    <string name="tool_stats">Estadísticas</string>
+    <string name="tool_stats_desc">Mensajes por día, chats y horas más activos, calculado en tu móvil</string>
+    <string name="tool_summary">Resumir un chat</string>
+    <string name="tool_summary_desc">Un resumen corto de lo hablado en un grupo o chat (usa tu clave de Groq)</string>
 </resources>

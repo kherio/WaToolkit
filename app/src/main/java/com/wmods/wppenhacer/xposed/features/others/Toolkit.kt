@@ -68,6 +68,12 @@ class Toolkit(classLoader: ClassLoader, preferences: SharedPreferences) :
                 ToolRequest.RECOVER -> RecoverChatFlow(activity).start()
                 ToolRequest.BACKUP -> BackupFlow(activity).start()
                 ToolRequest.BACKUP_NOW -> AutoBackup.runNow()
+                ToolRequest.SEARCH -> com.wmods.wppenhacer.toolkit.insights.SearchFlow(activity).start()
+                ToolRequest.STORAGE -> com.wmods.wppenhacer.toolkit.insights.StorageFlow(activity).start()
+                ToolRequest.STATS -> com.wmods.wppenhacer.toolkit.insights.StatsFlow(activity).start()
+                ToolRequest.SUMMARY -> com.wmods.wppenhacer.toolkit.insights.SummaryFlow(
+                    activity, xprefs.getString("groq_api_key", "").orEmpty()
+                ).start()
                 ToolRequest.RESTART -> com.wmods.wppenhacer.xposed.utils.Utils.doRestart(activity)
                 ToolRequest.CLEAR_CACHE -> {
                     // Only the cache folders (internal and external): chats, media and settings are not touched.
