@@ -381,6 +381,11 @@ object FeatureCatalog {
             general, "conversation", "broadcast", "icon", "tag"
         )
         add(
+            catalog, context, "kw_notif", R.string.kw_notif, R.string.kw_notif_sum,
+            SearchableFeature.Category.GENERAL_CONVERSATION, general, "conversation",
+            "notifications", "keywords", "mute", "silence"
+        )
+        add(
             catalog,
             context,
             "pinnedlimit",

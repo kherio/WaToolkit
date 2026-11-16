@@ -657,4 +657,10 @@
     <string name="tool_stats_desc">Messages per day, busiest chats and hours, computed on your phone</string>
     <string name="tool_summary">Summarise a chat</string>
     <string name="tool_summary_desc">A short summary of what was said in a group or chat (uses your Groq key)</string>
+    <string name="kw_notif">Quiet chats unless a keyword appears</string>
+    <string name="kw_notif_sum">Hide the notifications of the chats below, except messages containing one of your keywords. Restart WhatsApp after changing it.</string>
+    <string name="kw_chats">Quiet chats</string>
+    <string name="kw_chats_sum">Chat or group names, separated by commas</string>
+    <string name="kw_words">Keywords</string>
+    <string name="kw_words_sum">Words that still notify you (your name, \"urgent\"…), separated by commas. Empty hides everything from those chats</string>
 </resources>
