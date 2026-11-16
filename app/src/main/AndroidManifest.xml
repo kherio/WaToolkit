@@ -156,6 +156,15 @@
             android:resource="@array/scope" />
 
         <receiver
+            android:name=".receivers.WhatsappUpdatedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REPLACED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
             android:name=".receivers.WAFReceiver"
             android:exported="true"
             tools:ignore="ExportedReceiver">

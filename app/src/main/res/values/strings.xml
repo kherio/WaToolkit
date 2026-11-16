@@ -645,4 +645,8 @@
     <string name="compat_alert">%1$d features have problems on this WhatsApp version: %2$s. Tap for details</string>
     <string name="video_no_limit">Remove video size limit</string>
     <string name="video_no_limit_sum">Send HD videos of any size (up to WhatsApp\'s 2 GB ceiling) without recompressing them to fit under the limit</string>
+    <string name="wa_update_title">WhatsApp update</string>
+    <string name="wa_update_known">WhatsApp updated to %s, which is not in the supported list yet. WaToolkit loads anyway but some features may fail; open the module to check compatibility.</string>
+    <string name="wa_update_unknown">WhatsApp updated to %s, a version branch WaToolkit has not been tested on. Features may not work; wait for a module update.</string>
+    <string name="wa_update_channel">WhatsApp updates</string>
 </resources>
