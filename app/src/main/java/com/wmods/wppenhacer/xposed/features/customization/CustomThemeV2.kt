@@ -254,7 +254,7 @@ class CustomThemeV2(loader: ClassLoader, preferences: SharedPreferences) :
                 ) {
                     if (typedValue.data == 0) return@after
                     val originalColor = typedValue.data
-                    val mappedColor = mapColor(originalColor)
+                    val mappedColor = IColors.getFromIntColor(originalColor, IColors.colors)
                     if (mappedColor == originalColor || checkNotApplyColor(originalColor)) return@after
                     typedValue.data = mappedColor
                 }
@@ -285,7 +285,7 @@ class CustomThemeV2(loader: ClassLoader, preferences: SharedPreferences) :
                 val mColors =
                     ReflectionUtils.getObjectField(colorStateList, "mColors") as IntArray
                 for (i in mColors.indices) {
-                    mColors[i] = mapColor(mColors[i])
+                    mColors[i] = IColors.getFromIntColor(mColors[i], IColors.colors)
                 }
             }
         }
@@ -296,12 +296,14 @@ class CustomThemeV2(loader: ClassLoader, preferences: SharedPreferences) :
         }.hook {
             before {
                 if (!colorsReady) return@before
-                val color = args[0] as Int
-                val mappedColor = mapColor(color)
-                // Most colors are not themed: skip the activity lookup for them.
-                if (mappedColor == color) return@before
                 val currentActivity = WppCore.getCurrentActivity()
-                if (currentActivity == null || isConversation(currentActivity.javaClass)) return@before
+                if (currentActivity == null || currentActivity.javaClass.simpleName == "Conversation") return@before
+
+                val color = args[0] as Int
+                val mappedColor = resolvedColors[color]
+                    ?: IColors.getFromIntColor(color, IColors.colors).also {
+                        resolvedColors[color] = it
+                    }
                 args[0] = mappedColor
             }
         }
@@ -473,18 +475,9 @@ class CustomThemeV2(loader: ClassLoader, preferences: SharedPreferences) :
         return (currentActivity == null || !homeClass.isInstance(currentActivity))
     }
 
-    /** Themed value of [color]; the string-based lookup is done once per distinct color. */
-    private fun mapColor(color: Int): Int =
-        resolvedColors[color] ?: IColors.getFromIntColor(color, IColors.colors).also { resolvedColors[color] = it }
-
-    private val conversationClasses = ConcurrentHashMap<Class<*>, Boolean>()
-
-    private fun isConversation(cls: Class<*>): Boolean =
-        conversationClasses.getOrPut(cls) { cls.simpleName == "Conversation" }
-
     private fun checkNotApplyColor(color: Int): Boolean {
         val activity = WppCore.getCurrentActivity()
-        if (activity != null && isConversation(activity.javaClass)
+        if (activity != null && activity.javaClass.simpleName == "Conversation"
             && ReflectionUtils.isCalledFromStrings("getValue")
             && !ReflectionUtils.isCalledFromStrings("android.view")
         ) {
