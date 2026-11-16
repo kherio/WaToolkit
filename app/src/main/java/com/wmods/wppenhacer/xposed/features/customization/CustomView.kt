@@ -74,7 +74,6 @@ class CustomView(loader: ClassLoader, preferences: SharedPreferences) :
     private var cacheImages: DrawableCache? = null
     private val chacheDrawables = HashMap<String, Drawable>()
     private var properties: Properties? = null
-    private val missingClasses = java.util.concurrent.ConcurrentHashMap.newKeySet<String>()
     private val processedViews = WeakHashMap<View, Boolean>()
     private val forcedVisibilityMap = WeakHashMap<View, Int>()
     private val forcedBackgroundMap = WeakHashMap<View, Drawable>()
@@ -290,10 +289,10 @@ class CustomView(loader: ClassLoader, preferences: SharedPreferences) :
         }.hook {
             after {
                 val view = instance as View
-                if (processedViews.isNotEmpty()) processedViews.remove(view)
-                if (forcedVisibilityMap.isNotEmpty()) forcedVisibilityMap.remove(view)
-                if (forcedBackgroundMap.isNotEmpty()) forcedBackgroundMap.remove(view)
-                if (forcedDrawableMap.isNotEmpty()) forcedDrawableMap.remove(view)
+                processedViews.remove(view)
+                forcedVisibilityMap.remove(view)
+                forcedBackgroundMap.remove(view)
+                forcedDrawableMap.remove(view)
             }
         }
 
@@ -314,8 +313,6 @@ class CustomView(loader: ClassLoader, preferences: SharedPreferences) :
 
     private fun applyRulesForView(view: View) {
         val id = view.id
-        // Most views have no id or no rule: leave before touching anything else.
-        if (id == View.NO_ID || (mapIds?.containsKey(id) != true && leafMapIds?.containsKey(id) != true)) return
         applyRules(view, mapIds?.get(id))
 
         val leafList = leafMapIds?.get(id) ?: return
@@ -1295,11 +1292,9 @@ class CustomView(loader: ClassLoader, preferences: SharedPreferences) :
 
     private fun resolveClass(className: String?): Class<*>? {
         if (className == null) return null
-        if (className in missingClasses) return null
-        resolvedClasses[className]?.let { return it }
-        val found = ReflectionUtils.findClassIfExists(className, classLoader)
-        if (found == null) missingClasses.add(className) else resolvedClasses[className] = found
-        return found
+        return resolvedClasses.getOrPut(className) {
+            ReflectionUtils.findClassIfExists(className, classLoader)
+        }
     }
 
     private fun getColorStateList(terms: List<SerialTerm>): ColorStateList {
