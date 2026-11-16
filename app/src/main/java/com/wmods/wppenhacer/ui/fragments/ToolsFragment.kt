@@ -68,6 +68,10 @@ class ToolsFragment : Fragment() {
             Tool("🗑", S.get(S.deleted_menu), S.get(S.tool_deleted_desc)) { open(ToolRequest.DELETED) },
             Tool("♻️", S.get(S.recover_menu), S.get(S.tool_recover_desc)) { open(ToolRequest.RECOVER) },
             Tool("💾", S.get(S.backup_menu), S.get(S.tool_backup_desc)) { open(ToolRequest.BACKUP) },
+            Tool("🔎", getString(R.string.tool_search), getString(R.string.tool_search_desc)) { open(ToolRequest.SEARCH) },
+            Tool("📦", getString(R.string.tool_storage), getString(R.string.tool_storage_desc)) { open(ToolRequest.STORAGE) },
+            Tool("📊", getString(R.string.tool_stats), getString(R.string.tool_stats_desc)) { open(ToolRequest.STATS) },
+            Tool("📝", getString(R.string.tool_summary), getString(R.string.tool_summary_desc)) { open(ToolRequest.SUMMARY) },
             Tool("🔓", getString(R.string.decrypt_backup), getString(R.string.decrypt_backup_desc)) {
                 pickBackup.launch(arrayOf("*/*"))
             },
