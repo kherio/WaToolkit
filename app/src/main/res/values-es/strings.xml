@@ -590,4 +590,8 @@
     <string name="compat_alert">%1$d funciones tienen problemas en esta versión de WhatsApp: %2$s. Toca para ver el detalle</string>
     <string name="video_no_limit">Quitar el límite de tamaño de vídeo</string>
     <string name="video_no_limit_sum">Enviar vídeos HD de cualquier tamaño (hasta el máximo de 2 GB de WhatsApp) sin recomprimirlos para que quepan en el límite</string>
+    <string name="wa_update_title">WhatsApp se ha actualizado</string>
+    <string name="wa_update_known">WhatsApp se ha actualizado a la %s, que aún no está en la lista de compatibles. WaToolkit se carga igualmente pero algunas funciones pueden fallar; abre el módulo para comprobar la compatibilidad.</string>
+    <string name="wa_update_unknown">WhatsApp se ha actualizado a la %s, una rama que WaToolkit no ha probado. Puede que haya funciones que no vayan; espera a una actualización del módulo.</string>
+    <string name="wa_update_channel">Actualizaciones de WhatsApp</string>
 </resources>
