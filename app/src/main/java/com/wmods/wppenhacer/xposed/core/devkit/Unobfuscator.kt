@@ -44,7 +44,41 @@ import java.util.stream.Collectors
 
 object Unobfuscator {
 
-    private lateinit var bridge: DexKitBridge
+    private var apkPath: String? = null
+    private var dexBridge: DexKitBridge? = null
+    @Volatile private var lastUse = 0L
+    private var closeTimer: Timer? = null
+    private const val IDLE_CLOSE_MS = 20_000L
+
+    /**
+     * DexKit indexes the whole APK, which is slow and memory hungry, so it is opened the first time a finder
+     * needs it (features resolved from the cache never need it) and closed again after [IDLE_CLOSE_MS] idle.
+     */
+    private val bridge: DexKitBridge
+        get() = synchronized(this) {
+            lastUse = System.currentTimeMillis()
+            dexBridge ?: DexKitBridge.create(checkNotNull(apkPath) { "Unobfuscator not initialized" }).also {
+                dexBridge = it
+                scheduleClose()
+            }
+        }
+
+    private fun scheduleClose() {
+        closeTimer?.cancel()
+        closeTimer = Timer("dexkit-idle", true).also { t ->
+            t.schedule(object : TimerTask() {
+                override fun run() {
+                    synchronized(this@Unobfuscator) {
+                        if (System.currentTimeMillis() - lastUse < IDLE_CLOSE_MS) return
+                        try { dexBridge?.close() } catch (_: Throwable) {}
+                        dexBridge = null
+                        closeTimer?.cancel()
+                        closeTimer = null
+                    }
+                }
+            }, IDLE_CLOSE_MS, IDLE_CLOSE_MS / 2)
+        }
+    }
 
     val cacheClasses = ConcurrentHashMap<String, Class<*>>()
 
@@ -54,12 +88,8 @@ object Unobfuscator {
 
     @JvmStatic
     fun initWithPath(path: String): Boolean {
-        return try {
-            bridge = DexKitBridge.create(path)
-            true
-        } catch (_: Exception) {
-            false
-        }
+        apkPath = path
+        return java.io.File(path).isFile
     }
 
     @Throws(Exception::class)
