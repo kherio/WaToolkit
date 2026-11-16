@@ -52,6 +52,7 @@ import com.wmods.wppenhacer.xposed.features.others.MinorFixes
 import com.wmods.wppenhacer.xposed.features.others.Stickers
 import com.wmods.wppenhacer.xposed.features.others.TextStatusComposer
 import com.wmods.wppenhacer.xposed.features.others.Toolkit
+import com.wmods.wppenhacer.xposed.features.others.NotificationKeywords
 import com.wmods.wppenhacer.xposed.features.others.ToastViewer
 import com.wmods.wppenhacer.xposed.features.privacy.AntiWa
 import com.wmods.wppenhacer.xposed.features.privacy.CallPrivacy
@@ -139,6 +140,7 @@ internal object FeatureRegistry {
         AboutContactPicker::class.java,
         DefaultEmoji::class.java,
         CaptureDevice::class.java,
-        ContextMenuActionProvider::class.java
+        ContextMenuActionProvider::class.java,
+        NotificationKeywords::class.java
     )
 }

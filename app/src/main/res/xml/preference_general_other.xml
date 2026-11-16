@@ -15,6 +15,25 @@
             app:title="@string/removeforwardlimit" />
 
         <rikka.material.preference.MaterialSwitchPreference
+            app:key="kw_notif"
+            app:summary="@string/kw_notif_sum"
+            app:title="@string/kw_notif" />
+
+        <EditTextPreference
+            app:dependency="kw_notif"
+            app:key="kw_chats"
+            app:summary="@string/kw_chats_sum"
+            app:title="@string/kw_chats"
+            app:useSimpleSummaryProvider="false" />
+
+        <EditTextPreference
+            app:dependency="kw_notif"
+            app:key="kw_words"
+            app:summary="@string/kw_words_sum"
+            app:title="@string/kw_words"
+            app:useSimpleSummaryProvider="false" />
+
+        <rikka.material.preference.MaterialSwitchPreference
             app:key="capture_device"
             app:summary="@string/capture_device_sum"
             app:title="@string/capture_device_title" />

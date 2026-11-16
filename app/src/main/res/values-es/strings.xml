@@ -602,4 +602,10 @@
     <string name="tool_stats_desc">Mensajes por día, chats y horas más activos, calculado en tu móvil</string>
     <string name="tool_summary">Resumir un chat</string>
     <string name="tool_summary_desc">Un resumen corto de lo hablado en un grupo o chat (usa tu clave de Groq)</string>
+    <string name="kw_notif">Chats en silencio salvo palabras clave</string>
+    <string name="kw_notif_sum">Oculta las notificaciones de los chats de abajo, salvo los mensajes que contengan alguna de tus palabras clave. Reinicia WhatsApp tras cambiarlo.</string>
+    <string name="kw_chats">Chats en silencio</string>
+    <string name="kw_chats_sum">Nombres de chats o grupos, separados por comas</string>
+    <string name="kw_words">Palabras clave</string>
+    <string name="kw_words_sum">Palabras que sí te avisan (tu nombre, \"urgente\"…), separadas por comas. Vacío oculta todo de esos chats</string>
 </resources>
