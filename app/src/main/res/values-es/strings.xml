@@ -614,4 +614,8 @@
     <string name="quiet_end">Termina el silencio (HH:mm)</string>
     <string name="quiet_except">Chats que sí pueden avisar</string>
     <string name="quiet_except_sum">Nombres de chats o grupos, separados por comas</string>
+    <string name="chat_picker_none">Ninguno seleccionado</string>
+    <string name="chat_picker_count">%d chats seleccionados</string>
+    <string name="chat_picker_search">Buscar</string>
+    <string name="chat_picker_empty">La lista de chats aún no está disponible. Abre WhatsApp una vez con el módulo activo y vuelve aquí.</string>
 </resources>

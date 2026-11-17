@@ -20,3 +20,15 @@ class NotificationKeywordFilterTest {
 
     @Test fun emptyKeywordsHideEverythingFromThoseChats() = assertTrue(hide("Familia", "", "Familia", "urgente"))
 }
+
+class NotificationKeywordFilterNamesTest {
+    @Test fun lineSeparatedNamesKeepTheirCommas() {
+        val names = NotificationKeywordFilter.split("Familia, amigos\nTrabajo")
+        org.junit.Assert.assertEquals(listOf("familia, amigos", "trabajo"), names)
+    }
+
+    @Test fun matchesChatUsesThePickedNames() {
+        assertTrue(NotificationKeywordFilter.matchesChat("Familia, amigos\nTrabajo", listOf("Trabajo")))
+        assertFalse(NotificationKeywordFilter.matchesChat("Familia, amigos\nTrabajo", listOf("Amigos")))
+    }
+}

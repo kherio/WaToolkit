@@ -669,4 +669,8 @@
     <string name="quiet_end">Silence ends (HH:mm)</string>
     <string name="quiet_except">Chats that can still notify</string>
     <string name="quiet_except_sum">Chat or group names, separated by commas</string>
+    <string name="chat_picker_none">None selected</string>
+    <string name="chat_picker_count">%d chats selected</string>
+    <string name="chat_picker_search">Search</string>
+    <string name="chat_picker_empty">The chat list is not available yet. Open WhatsApp once with the module active and come back.</string>
 </resources>

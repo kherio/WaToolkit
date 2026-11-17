@@ -241,6 +241,7 @@ object FeatureLoader : YukiBaseHooker() {
         if (shouldSchedule) {
             activity.window.decorView.postDelayed({
                 CompletableFuture.runAsync(UpdateChecker(activity))
+                CompletableFuture.runAsync { com.wmods.wppenhacer.toolkit.ChatNames.publish(activity) }
             }, 2000)
         }
     }
