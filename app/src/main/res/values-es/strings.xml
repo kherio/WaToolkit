@@ -608,4 +608,10 @@
     <string name="kw_chats_sum">Nombres de chats o grupos, separados por comas</string>
     <string name="kw_words">Palabras clave</string>
     <string name="kw_words_sum">Palabras que sí te avisan (tu nombre, \"urgente\"…), separadas por comas. Vacío oculta todo de esos chats</string>
+    <string name="quiet_hours">Silencio programado</string>
+    <string name="quiet_hours_sum">Oculta las notificaciones de mensajes de WhatsApp durante una franja diaria. Las llamadas nunca se ocultan. Reinicia WhatsApp tras cambiarlo.</string>
+    <string name="quiet_start">Empieza el silencio (HH:mm)</string>
+    <string name="quiet_end">Termina el silencio (HH:mm)</string>
+    <string name="quiet_except">Chats que sí pueden avisar</string>
+    <string name="quiet_except_sum">Nombres de chats o grupos, separados por comas</string>
 </resources>
