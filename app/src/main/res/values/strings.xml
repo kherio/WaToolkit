@@ -663,4 +663,10 @@
     <string name="kw_chats_sum">Chat or group names, separated by commas</string>
     <string name="kw_words">Keywords</string>
     <string name="kw_words_sum">Words that still notify you (your name, \"urgent\"…), separated by commas. Empty hides everything from those chats</string>
+    <string name="quiet_hours">Scheduled silence</string>
+    <string name="quiet_hours_sum">Hide WhatsApp message notifications during a daily time window. Calls are never hidden. Restart WhatsApp after changing it.</string>
+    <string name="quiet_start">Silence starts (HH:mm)</string>
+    <string name="quiet_end">Silence ends (HH:mm)</string>
+    <string name="quiet_except">Chats that can still notify</string>
+    <string name="quiet_except_sum">Chat or group names, separated by commas</string>
 </resources>

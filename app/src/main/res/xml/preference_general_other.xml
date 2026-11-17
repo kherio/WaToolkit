@@ -34,6 +34,32 @@
             app:useSimpleSummaryProvider="false" />
 
         <rikka.material.preference.MaterialSwitchPreference
+            app:key="quiet_hours"
+            app:summary="@string/quiet_hours_sum"
+            app:title="@string/quiet_hours" />
+
+        <EditTextPreference
+            app:defaultValue="23:00"
+            app:dependency="quiet_hours"
+            app:key="quiet_start"
+            app:title="@string/quiet_start"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:defaultValue="07:00"
+            app:dependency="quiet_hours"
+            app:key="quiet_end"
+            app:title="@string/quiet_end"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:dependency="quiet_hours"
+            app:key="quiet_except"
+            app:summary="@string/quiet_except_sum"
+            app:title="@string/quiet_except"
+            app:useSimpleSummaryProvider="false" />
+
+        <rikka.material.preference.MaterialSwitchPreference
             app:key="capture_device"
             app:summary="@string/capture_device_sum"
             app:title="@string/capture_device_title" />

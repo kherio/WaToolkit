@@ -14,6 +14,13 @@ object NotificationKeywordFilter {
     fun split(csv: String?): List<String> =
         (csv ?: "").split(',', '\n', ';').map { normalize(it.trim()) }.filter { it.isNotEmpty() }
 
+    /** True when one of the notification [titles] belongs to a chat of [chatsCsv]. */
+    fun matchesChat(chatsCsv: String?, titles: List<String>): Boolean {
+        val chats = split(chatsCsv)
+        if (chats.isEmpty()) return false
+        return titles.map { normalize(it) }.filter { it.isNotEmpty() }.any { h -> chats.any { c -> h == c || h.contains(c) } }
+    }
+
     fun shouldHide(chatsCsv: String?, wordsCsv: String?, titles: List<String>, texts: List<String>): Boolean {
         val chats = split(chatsCsv)
         if (chats.isEmpty()) return false
