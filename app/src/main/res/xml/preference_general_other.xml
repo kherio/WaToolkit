@@ -19,12 +19,10 @@
             app:summary="@string/kw_notif_sum"
             app:title="@string/kw_notif" />
 
-        <EditTextPreference
+        <com.wmods.wppenhacer.preference.ChatListPreference
             app:dependency="kw_notif"
             app:key="kw_chats"
-            app:summary="@string/kw_chats_sum"
-            app:title="@string/kw_chats"
-            app:useSimpleSummaryProvider="false" />
+            app:title="@string/kw_chats" />
 
         <EditTextPreference
             app:dependency="kw_notif"
@@ -52,12 +50,10 @@
             app:title="@string/quiet_end"
             app:useSimpleSummaryProvider="true" />
 
-        <EditTextPreference
+        <com.wmods.wppenhacer.preference.ChatListPreference
             app:dependency="quiet_hours"
             app:key="quiet_except"
-            app:summary="@string/quiet_except_sum"
-            app:title="@string/quiet_except"
-            app:useSimpleSummaryProvider="false" />
+            app:title="@string/quiet_except" />
 
         <rikka.material.preference.MaterialSwitchPreference
             app:key="capture_device"

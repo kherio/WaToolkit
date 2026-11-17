@@ -11,8 +11,12 @@ object NotificationKeywordFilter {
     fun normalize(s: String): String =
         Normalizer.normalize(s, Normalizer.Form.NFD).replace(Regex("\\p{M}+"), "").lowercase()
 
-    fun split(csv: String?): List<String> =
-        (csv ?: "").split(',', '\n', ';').map { normalize(it.trim()) }.filter { it.isNotEmpty() }
+    /** Names picked from the list are one per line (they may contain commas); older typed values use commas. */
+    fun split(csv: String?): List<String> {
+        val text = csv ?: ""
+        val parts = if ('\n' in text) text.split('\n') else text.split(',', ';')
+        return parts.map { normalize(it.trim()) }.filter { it.isNotEmpty() }
+    }
 
     /** True when one of the notification [titles] belongs to a chat of [chatsCsv]. */
     fun matchesChat(chatsCsv: String?, titles: List<String>): Boolean {

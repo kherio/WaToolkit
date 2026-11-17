@@ -31,6 +31,16 @@ class PrefsProvider : ContentProvider() {
                 null
             }
         }
+        if (method == METHOD_PUT_CHAT_NAMES) {
+            if (arg == null || arg.length > MAX_DIAGNOSTICS_CHARS || !CallerGuard.isCallerAllowed(context)) return null
+            return try {
+                org.json.JSONArray(arg)
+                com.wmods.wppenhacer.toolkit.ChatNames.file(context).writeText(arg)
+                Bundle()
+            } catch (_: Exception) {
+                null
+            }
+        }
         if (method != METHOD_GET_ALL) return null
         // Exported provider: only the module and WhatsApp/WhatsApp Business can read
         // the preferences (they include transcription API keys).
@@ -80,6 +90,7 @@ class PrefsProvider : ContentProvider() {
         const val METHOD_GET_ALL = "getAll"
         const val METHOD_TAKE_PENDING_TOOL = "takePendingTool"
         const val METHOD_PUT_DIAGNOSTICS = "putDiagnostics"
+        const val METHOD_PUT_CHAT_NAMES = "putChatNames"
         private const val MAX_DIAGNOSTICS_CHARS = 256 * 1024
         const val KEY_TOOL = "tool"
         const val KEY_VALUES = "values"
