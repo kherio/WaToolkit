@@ -672,5 +672,5 @@
     <string name="chat_picker_none">None selected</string>
     <string name="chat_picker_count">%d chats selected</string>
     <string name="chat_picker_search">Search</string>
-    <string name="chat_picker_empty">The chat list is not available yet. Open WhatsApp once with the module active and come back.</string>
+    <string name="chat_picker_empty">The chat list is not available yet. Force-stop WhatsApp and open it again with the module active (it loads the module on start), then come back.</string>
 </resources>

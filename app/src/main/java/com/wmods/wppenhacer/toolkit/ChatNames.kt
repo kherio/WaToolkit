@@ -6,6 +6,7 @@ import android.net.Uri
 import com.wmods.wppenhacer.BuildConfig
 import com.wmods.wppenhacer.provider.PrefsProvider
 import com.wmods.wppenhacer.toolkit.insights.InsightsEnv
+import com.wmods.wppenhacer.xposed.core.Diagnostics
 import org.json.JSONArray
 import java.io.File
 
@@ -31,8 +32,13 @@ object ChatNames {
             env.load()
             val names = env.db.chats().map { env.chatName(it) }.filter { it.isNotBlank() }
             val uri = Uri.parse("content://${BuildConfig.APPLICATION_ID}.preferences")
-            activity.contentResolver.call(uri, PrefsProvider.METHOD_PUT_CHAT_NAMES, JSONArray(names).toString(), null)
-        } catch (_: Throwable) {
+            val reply = activity.contentResolver.call(uri, PrefsProvider.METHOD_PUT_CHAT_NAMES, JSONArray(names).toString(), null)
+            Diagnostics.event(
+                "ChatNames",
+                if (reply != null) "published ${names.size} chats" else "module rejected the chat list (${names.size} chats)"
+            )
+        } catch (t: Throwable) {
+            Diagnostics.event("ChatNames", "publish failed: ${t.javaClass.simpleName}: ${t.message}")
         }
     }
 }
