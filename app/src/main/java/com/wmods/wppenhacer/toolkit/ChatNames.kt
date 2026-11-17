@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import com.wmods.wppenhacer.BuildConfig
 import com.wmods.wppenhacer.provider.PrefsProvider
+import com.wmods.wppenhacer.toolkit.insights.InsightsDb
 import com.wmods.wppenhacer.toolkit.insights.InsightsEnv
 import com.wmods.wppenhacer.xposed.core.Diagnostics
 import com.wmods.wppenhacer.xposed.core.WppCore
