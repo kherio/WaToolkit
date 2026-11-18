@@ -48,9 +48,10 @@ class ChatListPreference @JvmOverloads constructor(
         }
         // Chats already chosen that are no longer in the list stay selectable so they are not lost silently.
         val sel = selected()
-        // Real names first, then the chats that only have a phone number.
+        // Chats already selected first, then real names, then the chats that only have a phone number.
         val isNumber = { n: String -> n.any { it.isDigit() } && n.all { it.isDigit() || it in "+ -()" } }
-        val names = (all + sel.filter { it !in all }).sortedWith(compareBy({ isNumber(it) }, { it.lowercase() }))
+        val names = (all + sel.filter { it !in all })
+            .sortedWith(compareBy({ it !in sel }, { isNumber(it) }, { it.lowercase() }))
         var shown = names
         val list = ListView(context).apply { choiceMode = ListView.CHOICE_MODE_MULTIPLE }
         fun refresh(query: String) {
